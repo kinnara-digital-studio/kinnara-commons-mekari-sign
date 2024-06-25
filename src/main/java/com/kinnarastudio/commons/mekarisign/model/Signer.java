@@ -5,6 +5,10 @@ public class Signer {
     private final String email;
     private final Annotation[] annotations;
 
+    public Signer(String name, String email, Annotation annotation) {
+        this(name, email, new Annotation[]{annotation});
+    }
+
     public Signer(String name, String email, Annotation[] annotations) {
         this.name = name;
         this.email = email;

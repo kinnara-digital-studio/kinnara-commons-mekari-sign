@@ -8,6 +8,8 @@ import com.kinnarastudio.commons.mekarisign.model.GrantType;
 import com.kinnarastudio.commons.mekarisign.model.ServerType;
 import com.kinnarastudio.commons.mekarisign.service.Authenticator;
 
+import java.io.File;
+
 public class MekariSign {
     private final ServerType serverType;
     private final AuthenticationToken authenticationToken;
@@ -17,8 +19,12 @@ public class MekariSign {
         this.authenticationToken = authenticationToken;
     }
 
-    public static MekariSign.Builder builder() {
-        return MekariSign.Builder.getInstance();
+    public void globalSign(File file) {
+
+    }
+
+    public void digistamp(File file) {
+
     }
 
     public final static class Builder {
