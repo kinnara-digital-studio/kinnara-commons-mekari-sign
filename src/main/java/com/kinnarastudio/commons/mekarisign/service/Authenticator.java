@@ -65,7 +65,7 @@ public class Authenticator {
 //        }
 //    }
 
-    public AuthenticationToken authenticate(ServerType serverType, Authentication authentication) throws RequestException {
+    public synchronized AuthenticationToken authenticate(ServerType serverType, Authentication authentication) throws RequestException {
         final URL ssoBaseUrl = serverType.getSsoBaseUrl();
         final String url = ssoBaseUrl + "/auth/oauth2/token";
         try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
@@ -117,5 +117,9 @@ public class Authenticator {
         } catch (IOException | JSONException | AuthenticationException e) {
             throw new RequestException("Error authenticating : " + e.getMessage(), e);
         }
+    }
+
+    public synchronized AuthenticationToken refresh(ServerType serverType, Authentication authentication, AuthenticationToken prevToken) {
+        throw new IllegalArgumentException();
     }
 }

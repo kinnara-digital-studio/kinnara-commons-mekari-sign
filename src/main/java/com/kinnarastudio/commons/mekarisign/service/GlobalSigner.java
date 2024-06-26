@@ -51,30 +51,34 @@ public class GlobalSigner {
             // TODO: Andhela
 
             //Membuat JSON payload untuk permintaan POST
-            JSONObject json = new JSONObject();
-            json.put("filename", filename);
-            json.put("file", encodedFile);
-            json.put("signer", signer);
-            json.put("signing_order", signingOrder);
-            json.put("callback_url", callbackUrl);
+            JSONObject json = new JSONObject() {{
+                put("filename", filename);
+                put("file", encodedFile);
+                put("signer", signer);
+                put("signing_order", signingOrder);
+                put("callback_url", callbackUrl);
+            }};
 
             // Menentukan URL server
             final HttpEntity httpEntity = new StringEntity(json.toString(), ContentType.APPLICATION_JSON);
             final URL baseUrl = serverType.getSsoBaseUrl();
             final String urlGlobal =  baseUrl + "/v2/esign/v1/documents/request_global_sign";
-            final HttpPost post = new HttpPost(urlGlobal);
-            post.setEntity(httpEntity);
+
+            final HttpPost post = new HttpPost(urlGlobal) {{
+                addHeader("Authorization", "Bearer " + token.getAccessToken());
+                setEntity(httpEntity);
+            }};
+
             final HttpResponse response = httpClient.execute(post);
             final int statusCode = response.getStatusLine().getStatusCode();
 
             if (statusCode != 200) {
                 throw new RequestException("HTTP response code [" + statusCode + "]");
             }
+
             // Mengirim permintaan POST dan menerima response
             try (Reader reader = new InputStreamReader(response.getEntity().getContent());
-                 final BufferedReader bufferedReader = new BufferedReader(reader)) {
-
-                // TODO : check with server
+                 BufferedReader bufferedReader = new BufferedReader(reader)) {
 
                 final JSONObject jsonResponsePayload = new JSONObject(bufferedReader.lines().collect(Collectors.joining()));
 
