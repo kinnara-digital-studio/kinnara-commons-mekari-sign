@@ -44,6 +44,7 @@ public class UnitTest1 {
 //            mekariSign.globalSign(file);
 //            mekariSign.digistamp(file);
 
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
