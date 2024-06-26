@@ -1,5 +1,7 @@
 package com.kinnarastudio.commons.mekarisign.model;
 
+import org.json.JSONObject;
+
 public class Annotation {
     private final AnnotationType annotationType;
     private final int page;
@@ -51,5 +53,9 @@ public class Annotation {
 
     public long getCanvasHeight() {
         return canvasHeight;
+    }
+
+    public JSONObject toJson() {
+        return new JSONObject();
     }
 }

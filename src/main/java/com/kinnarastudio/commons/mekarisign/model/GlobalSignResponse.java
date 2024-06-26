@@ -6,9 +6,9 @@ public class GlobalSignResponse {
     private final int id;
     private final String type;
     private final File file;
-    private final Signer[] signers;
+    private final RequestSigner[] signers;
 
-    public GlobalSignResponse(int id, String type, File file, Signer[] signers) {
+    public GlobalSignResponse(int id, String type, File file, RequestSigner[] signers) {
         this.id = id;
         this.type = type;
         this.file = file;

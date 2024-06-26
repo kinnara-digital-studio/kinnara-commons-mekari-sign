@@ -8,7 +8,7 @@ import java.net.URL;
  */
 public enum ServerType {
     PRODUCTION("https://api.mekari.com/v2/esign/v1", "https://account.mekari.com"),
-    SANDBOX("https://sandbox-app-sign.mekari.io", "https://sandbox-account.mekari.com"),
+    SANDBOX("https://sandbox-api.mekari.com", "https://sandbox-account.mekari.com"),
     STAGING("https://api.mekari.io/v2/esign/v1", "https://account.mekari.io"),
     MOCK("https://58fdbadf-ae2d-4965-b892-10aa4ca64ebd.mock.pstmn.io", "https://account.mekari.io");
 
