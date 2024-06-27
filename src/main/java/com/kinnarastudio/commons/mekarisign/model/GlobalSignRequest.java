@@ -3,8 +3,6 @@ package com.kinnarastudio.commons.mekarisign.model;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.File;
-
 public class GlobalSignRequest {
     private final String doc;
     private final String filename;
@@ -53,12 +51,13 @@ public class GlobalSignRequest {
             put("filename", filename);
             put("doc", doc);
 
-            final JSONArray jsonSigner = new JSONArray() {{
-                for (RequestSigner signer : signers) {
-                    put(signer.toJson());
-                }
-            }};
-            put("signers", jsonSigner);
+            if(signers != null) {
+                put("signers", new JSONArray() {{
+                    for (RequestSigner signer : signers) {
+                        put(signer.toJson());
+                    }
+                }});
+            }
 
             put("signing_order", signingOrder);
             put("callback_url", callbackUrl);

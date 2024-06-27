@@ -65,7 +65,7 @@ public class Authenticator {
 //        }
 //    }
 
-    public synchronized AuthenticationToken authenticate(ServerType serverType, Authentication authentication) throws RequestException {
+    public AuthenticationToken authenticate(ServerType serverType, Authentication authentication) throws RequestException {
         final URL ssoBaseUrl = serverType.getSsoBaseUrl();
         final String url = ssoBaseUrl + "/auth/oauth2/token";
         try (CloseableHttpClient client = HttpClientBuilder.create().build()) {

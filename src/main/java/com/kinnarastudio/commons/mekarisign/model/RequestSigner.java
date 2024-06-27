@@ -31,17 +31,17 @@ public class RequestSigner {
     }
 
     public JSONObject toJson() {
-        final JSONObject json = new JSONObject();
-        json.put("name", name);
-        json.put("email", email);
+        return new JSONObject() {{
+            put("name", name);
+            put("email", email);
 
-        if(annotations != null) {
-            final JSONArray jsonAnnotations = new JSONArray();
-            for (Annotation annotation : annotations) {
-                jsonAnnotations.put(annotation.toJson());
+            if(annotations != null) {
+                put("annotations", new JSONArray() {{
+                    for (Annotation annotation : annotations) {
+                        put(annotation.toJson());
+                    }
+                }});
             }
-            json.put("annontations", jsonAnnotations);
-        }
-        return json;
+        }};
     }
 }

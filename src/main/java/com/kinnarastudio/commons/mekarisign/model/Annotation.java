@@ -56,6 +56,15 @@ public class Annotation {
     }
 
     public JSONObject toJson() {
-        return new JSONObject();
+        return new JSONObject() {{
+            put("annotation_type", annotationType);
+            put("page", page);
+            put("position_x", positionX);
+            put("position_y", positionY);
+            put("element_width", elementWidth);
+            put("element_height", elementHeight);
+            put("canvas_width", canvasWidth);
+            put("canvas_height", elementHeight);
+        }};
     }
 }

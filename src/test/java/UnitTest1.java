@@ -28,7 +28,7 @@ public class UnitTest1 {
 
             final Authentication authentication = new Authentication(clientId, clientSecret, GrantType.AUTHORIZATION_CODE, code);
             final AuthenticationToken token = Authenticator.getInstance().authenticate(ServerType.SANDBOX, authentication);
-            final Annotation annotation = new Annotation(AnnotationType.SIGNATURE, 1, 0, 0, 0, 0, 100, 100);
+            final Annotation annotation = new Annotation(AnnotationType.SIGNATURE, 1, 50, 50, 100, 100, 100, 100);
             final RequestSigner signer = new RequestSigner("Scoobydoo", username, annotation);
 
             final File file = new File(getClass().getResource("/resources/testing_doc.pdf").getFile());
