@@ -21,19 +21,18 @@ public class GlobalSigner {
     public void requestSign(ServerType serverType, AuthenticationToken token, GlobalSignRequest signRequest) throws RequestException {
         try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
 
-            final JSONObject requestJson = signRequest.toJson();
-            final HttpEntity httpEntity = new StringEntity(requestJson.toString(), ContentType.APPLICATION_JSON);
             final URL baseUrl = serverType.getBaseUrl();
             final String urlGlobal = baseUrl + "/v2/esign/v1/documents/request_global_sign";
+            final JSONObject requestJson = signRequest.toJson();
 
             final HttpPost post = new HttpPost(urlGlobal) {{
                 addHeader("Authorization", "Bearer " + token.getAccessToken());
+
+                final HttpEntity httpEntity = new StringEntity(requestJson.toString(), ContentType.APPLICATION_JSON);
                 setEntity(httpEntity);
             }};
 
             final HttpResponse response = httpClient.execute(post);
-
-            // Mengirim permintaan POST dan menerima response
             try (final Reader reader = new InputStreamReader(response.getEntity().getContent());
                  final BufferedReader bufferedReader = new BufferedReader(reader)) {
 
