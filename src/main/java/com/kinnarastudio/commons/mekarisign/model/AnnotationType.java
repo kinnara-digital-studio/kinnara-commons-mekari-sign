@@ -16,7 +16,7 @@ public enum AnnotationType {
             case "initial":
                 return INITIAL;
             default:
-                throw new ParseException("Error parsing value [" + value + "]", 0);
+                throw new ParseException("Error [" + AnnotationType.class.getName() + "] parsing [" + value + "]", 0);
         }
     }
 }

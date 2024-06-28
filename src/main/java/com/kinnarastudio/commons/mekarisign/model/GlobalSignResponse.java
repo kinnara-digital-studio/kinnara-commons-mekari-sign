@@ -2,23 +2,16 @@ package com.kinnarastudio.commons.mekarisign.model;
 
 import org.json.JSONObject;
 
-import java.io.File;
+import java.text.ParseException;
 
 public class GlobalSignResponse {
-    private final int id;
-    private final String type;
-    private final File file;
-    private final RequestSigner[] signers;
+    private final ResponseData data;
 
-    public GlobalSignResponse(JSONObject json) {
-        id = json.getInt("id");
-        type = json.getString("type");
-
+    public GlobalSignResponse(JSONObject fromJson) throws ParseException {
+        data = new ResponseData(fromJson.getJSONObject("data"));
     }
-    public GlobalSignResponse(int id, String type, File file, RequestSigner[] signers) {
-        this.id = id;
-        this.type = type;
-        this.file = file;
-        this.signers = signers;
+
+    public ResponseData getData() {
+        return data;
     }
 }

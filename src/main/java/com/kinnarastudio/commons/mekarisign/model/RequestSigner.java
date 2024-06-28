@@ -27,7 +27,7 @@ public class RequestSigner {
     }
 
     public Annotation[] getAnnotations() {
-        return annotations.clone();
+        return annotations;
     }
 
     public JSONObject toJson() {
