@@ -18,7 +18,20 @@ import java.text.ParseException;
 import java.util.stream.Collectors;
 
 public class GlobalSigner {
-    public void requestSign(ServerType serverType, AuthenticationToken token, GlobalSignRequest signRequest) throws RequestException {
+    private static GlobalSigner instance = null;
+
+    private GlobalSigner() {
+    }
+
+    public static GlobalSigner getInstance() {
+        if (instance == null) {
+            instance = new GlobalSigner();
+        }
+
+        return instance;
+    }
+
+    public ResponseData requestSign(ServerType serverType, AuthenticationToken token, GlobalSignRequest signRequest) throws RequestException {
         try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
 
             final URL baseUrl = serverType.getBaseUrl();
@@ -26,27 +39,30 @@ public class GlobalSigner {
             final JSONObject requestJson = signRequest.toJson();
 
             final HttpPost post = new HttpPost(urlGlobal) {{
-                addHeader("Authorization", "Bearer " + token.getAccessToken());
+                if (token.getTokenType() == TokenType.BEARER) {
+                    addHeader("Authorization", "Bearer " + token.getAccessToken());
+                }
 
                 final HttpEntity httpEntity = new StringEntity(requestJson.toString(), ContentType.APPLICATION_JSON);
                 setEntity(httpEntity);
             }};
 
             final HttpResponse response = httpClient.execute(post);
+
             try (final Reader reader = new InputStreamReader(response.getEntity().getContent());
                  final BufferedReader bufferedReader = new BufferedReader(reader)) {
 
                 final String responsePayload = bufferedReader.lines().collect(Collectors.joining());
+
+                final int statusCode = response.getStatusLine().getStatusCode();
+                if (statusCode != 200) {
+                    throw new RequestException("HTTP response code [" + statusCode + "] response [" + responsePayload + "]");
+                }
+
                 final JSONObject jsonResponsePayload = new JSONObject(responsePayload);
                 final GlobalSignResponse globalSignResponse = new GlobalSignResponse(jsonResponsePayload);
+                return globalSignResponse.getData();
             }
-
-            final int statusCode = response.getStatusLine().getStatusCode();
-
-            if (statusCode != 200) {
-                throw new RequestException("HTTP response code [" + statusCode + "]");
-            }
-
         } catch (IOException | JSONException | ParseException e) {
             throw new RequestException("Error authenticating : " + e.getMessage(), e);
         }
