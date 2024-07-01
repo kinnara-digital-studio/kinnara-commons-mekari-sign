@@ -26,18 +26,12 @@ public class PSrESigner {
         final String callbackUrl = globalSignRequest.getCallbackUrl();
 
         try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
-<<<<<<< HEAD
             // TODO: connect to Mekari Sign server
-            // TODO: Andhela
 
             //Membuat JSON payload untuk permintaan POST
-            JSONObject requestJson = globalSignRequest.toJson();
 
             // Menentukan URL server
-=======
             final JSONObject requestJson = globalSignRequest.toJson();
-
->>>>>>> 4ab87e0efe39f4797a7e27260d488455fbb7e781
             final HttpEntity httpEntity = new StringEntity(requestJson.toString(), ContentType.APPLICATION_JSON);
             final URL baseUrl = serverType.getBaseUrl();
             final String urlGlobal =  baseUrl + "/v2/esign/v1/documents/request_psre_sign";
@@ -72,11 +66,7 @@ public class PSrESigner {
             }
 
         } catch (IOException | JSONException | AuthenticationException e) {
-<<<<<<< HEAD
-            throw new RequestException("Error authenticating : " + e.getMessage(), e);
-=======
             throw new RequestException(e.getMessage(), e);
->>>>>>> 4ab87e0efe39f4797a7e27260d488455fbb7e781
         }
     }
 }
