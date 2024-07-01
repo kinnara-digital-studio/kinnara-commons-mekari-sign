@@ -52,5 +52,6 @@ public class ResponseSigner {
 
     public String getSigningAt() {
         return signingAt;
+
     }
 }

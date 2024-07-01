@@ -1,5 +1,13 @@
 package com.kinnarastudio.commons.mekarisign.model;
 
+import java.text.ParseException;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import com.kinnarastudio.commons.Try;
+import com.kinnarastudio.commons.jsonstream.JSONStream;
+
 public class GetDocumentListsResponse {
     private final SignResponseAttributes[] signResponseAttributes;
     private final int currentPage;
@@ -18,5 +26,18 @@ public class GetDocumentListsResponse {
         this.perPage = perPage;
         this.totalPage = totalPage;
         this.documentCount = documentCount;
+    }
+
+    public GetDocumentListsResponse(JSONObject jsonBody) throws ParseException
+    {
+        signResponseAttributes = JSONStream.of(jsonBody.getJSONArray("data"), JSONArray::getJSONObject)
+                .map(Try.onFunction(SignResponseAttributes::new))
+                .toArray(SignResponseAttributes[]::new);
+        currentPage = jsonBody.getInt("current_page");
+        previous = jsonBody.getInt("previous");
+        next = jsonBody.getInt("next");
+        perPage = jsonBody.getInt("per_page");
+        totalPage = jsonBody.getInt("total_pages");
+        documentCount = jsonBody.getInt("count");
     }
 }
