@@ -39,4 +39,7 @@ public class ResponseSigner {
     public String getSignStatus(){return signingUrl;}
 
 
+    public int getOrder() {
+        return order;
+    }
 }

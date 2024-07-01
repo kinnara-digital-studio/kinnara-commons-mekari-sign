@@ -3,6 +3,8 @@ package com.kinnarastudio.commons.mekarisign.model;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class SignResponseAttributes {
@@ -55,6 +57,10 @@ public class SignResponseAttributes {
             ResponseSigner resp = new ResponseSigner(sign);
             responseSigner[i] = resp;
         }
+
+        //Mengambil dan mengonversi createdAt dan updateAt dari JSON
+        createdAt = Date.from(Instant.parse(respAttributes.getString("created_at")));
+        updatedAt = Date.from(Instant.parse(respAttributes.getString("update_at")));
     }
 
     public String getFilename() {
@@ -91,5 +97,20 @@ public class SignResponseAttributes {
 
     public Date getUpdatedAt() {
         return updatedAt;
+    }
+
+    //Metode untuk mengonversi Date ke format ISO 8601
+    public static String convertDateToISO(Date date){
+        return DateTimeFormatter.ISO_INSTANT.format(date.toInstant());
+    }
+
+    //Metode untuk mendapatkan createdAt dalam format ISO 8601
+    public  String getCreatedAtISO(){
+        return convertDateToISO((createdAt));
+    }
+
+    //Metode untuk mendapatkan updatedAt dalam format ISO 8601
+    public String getUpdatedISO(){
+        return convertDateToISO(updatedAt);
     }
 }
