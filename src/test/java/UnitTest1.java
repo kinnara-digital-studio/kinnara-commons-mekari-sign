@@ -1,14 +1,14 @@
+import com.kinnarastudio.commons.mekarisign.MekariSign;
+import com.kinnarastudio.commons.mekarisign.exception.BuildingException;
 import com.kinnarastudio.commons.mekarisign.exception.RequestException;
 import com.kinnarastudio.commons.mekarisign.model.*;
-import com.kinnarastudio.commons.mekarisign.service.Authenticator;
-import com.kinnarastudio.commons.mekarisign.service.GlobalSigner;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Base64;
+import java.net.URL;
+import java.util.Optional;
 import java.util.Properties;
 
 public class UnitTest1 {
@@ -26,44 +26,23 @@ public class UnitTest1 {
             final String username = properties.getProperty("username");
             final String password = properties.getProperty("password");
 
-            final Authentication authentication = new Authentication(clientId, clientSecret, GrantType.AUTHORIZATION_CODE, code);
-            final AuthenticationToken token = Authenticator.getInstance().authenticate(ServerType.SANDBOX, authentication);
-            final Annotation annotation = new Annotation(AnnotationType.SIGNATURE, 1, 0, 0, 0, 0, 100, 100);
-            final RequestSigner signer = new RequestSigner("Scoobydoo", username, annotation);
+            final Annotation annotation = new Annotation(AnnotationType.SIGNATURE, 1, 25, 50, 10, 20, 100, 100);
+            final RequestSigner signer = new RequestSigner("Scooby Doo", username, annotation);
+            final File file = Optional.ofNullable(getClass().getResource("/resources/testing_doc.pdf"))
+                    .map(URL::getFile)
+                    .map(File::new)
+                    .orElseThrow(() -> new IOException("Resource not found"));
 
-            final File file = new File(getClass().getResource("/resources/testing_doc.pdf").getFile());
-            final String filename = file.getName();
+            final MekariSign mekariSign = MekariSign.getBuilder()
+                    .setClientId(clientId)
+                    .setClientSecret(clientSecret)
+                    .setServerType(ServerType.SANDBOX)
+                    .setSecretCode(code)
+                    .build();
 
-            final StringBuilder sb = new StringBuilder();
-            try (final FileInputStream fis = new FileInputStream(file)) {
-                final Base64.Encoder encoder = Base64.getEncoder();
+            mekariSign.globalSign(file, signer);
 
-                int len = Math.toIntExact(file.length());
-                final byte[] buffer = new byte[len];
-
-                while (fis.read(buffer) > 0) {
-                    final String base64encoded = encoder.encodeToString(buffer);
-                    sb.append(base64encoded);
-                }
-            }
-            final String doc = sb.toString();
-
-            final GlobalSignRequest globalSignRequest = new GlobalSignRequest(filename, doc, signer);
-            final GlobalSigner globalSigner = new GlobalSigner();
-            globalSigner.requestSign(ServerType.SANDBOX, token, globalSignRequest);
-
-//            final MekariSign mekariSign = MekariSign.Builder.getInstance()
-//                    .setClientId(clientSecret)
-//                    .setClientSecret(clientSecret)
-//                    .setServerType(ServerType.SANDBOX)
-//                    .setCode(code)
-//                    .buildAndAuthenticate();
-//
-//            mekariSign.globalSign(file);
-//            mekariSign.digistamp(file);
-
-
-        } catch (IOException e) {
+        } catch (IOException | BuildingException e) {
             throw new RuntimeException(e);
         }
     }

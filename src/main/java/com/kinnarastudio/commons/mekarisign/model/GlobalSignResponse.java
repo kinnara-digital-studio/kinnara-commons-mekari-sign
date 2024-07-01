@@ -2,6 +2,7 @@ package com.kinnarastudio.commons.mekarisign.model;
 
 import org.json.JSONObject;
 
+
 import java.io.File;
 
 public class GlobalSignResponse {
@@ -33,5 +34,17 @@ public class GlobalSignResponse {
         // Menginisialisasi objek SignResponseAttributes dari JSONObject
         JSONObject attributesObject = signResp.getJSONObject("attributes");
         attributes = new SignResponseAttributes(attributesObject);
+
+import java.text.ParseException;
+
+public class GlobalSignResponse {
+    private final ResponseData data;
+
+    public GlobalSignResponse(JSONObject fromJson) throws ParseException {
+        data = new ResponseData(fromJson.getJSONObject("data"));
+    }
+
+    public ResponseData getData() {
+        return data;
     }
 }
