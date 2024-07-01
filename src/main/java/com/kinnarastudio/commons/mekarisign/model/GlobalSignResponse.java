@@ -1,9 +1,7 @@
 package com.kinnarastudio.commons.mekarisign.model;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import javax.xml.crypto.Data;
 import java.text.ParseException;
 
 public class GlobalSignResponse {
