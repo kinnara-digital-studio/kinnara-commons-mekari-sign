@@ -56,6 +56,8 @@ public class MekariSign {
         }
     }
 
+    
+
     public void digitalStamp(File file) {
 
     }
