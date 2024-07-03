@@ -9,37 +9,38 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.stream.Collectors;
 
-public class GlobalSigner {
-    private static GlobalSigner instance = null;
+public class AutoSign {
+    private static AutoSign instance = null;
 
-    private GlobalSigner() {
+    private AutoSign() {
+
     }
 
-    public static GlobalSigner getInstance() {
+    public static AutoSign getInstance() {
         if (instance == null) {
-            instance = new GlobalSigner();
+            instance = new AutoSign();
         }
-
         return instance;
     }
 
-    public SignResponseAttributes requestSign(ServerType serverType, AuthenticationToken token, GlobalSignRequest signRequest) throws RequestException {
+    public RespDataAutoSign[] requestAutoSign(ServerType serverType, AuthenticationToken token, ReqAutoSign reqAutoSign) throws RequestException, IOException {
         try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
-
             final URL baseUrl = serverType.getBaseUrl();
-            final String urlGlobal = baseUrl + "/v2/esign/v1/documents/request_global_sign";
-            final JSONObject requestJson = signRequest.toJson();
+            final  String urlAuto = baseUrl + "/v2/esign/v1/auto_sign";
+            final JSONObject requestJson = reqAutoSign.toJson();
 
-            final HttpPost post = new HttpPost(urlGlobal) {{
-                if (token.getTokenType() == TokenType.BEARER) {
+            final HttpPost post = new HttpPost(urlAuto) {{
+                if(token.getTokenType() == TokenType.BEARER) {
                     addHeader("Authorization", "Bearer " + token.getAccessToken());
                 }
 
@@ -60,11 +61,18 @@ public class GlobalSigner {
                 }
 
                 final JSONObject jsonResponsePayload = new JSONObject(responsePayload);
-                final GlobalSignResponse globalSignResponse = new GlobalSignResponse(jsonResponsePayload);
-                return globalSignResponse.getData();
+                final AutoSignResponse autoResponse = new AutoSignResponse(jsonResponsePayload);
+                return autoResponse.getRespData();
+
+            } catch (ParseException e) {
+                throw new RequestException("Error authenticating : " + e.getMessage(), e);
             }
-        } catch (IOException | JSONException | ParseException e) {
-            throw new RequestException("Error authenticating : " + e.getMessage(), e);
+        } catch (IOException e) {
+            System.err.println("IOException: " + e.getMessage());
+            throw e;
+        } catch (RequestException e) {
+            System.err.println("RequestException: " + e.getMessage());
+            throw e;
         }
     }
 }

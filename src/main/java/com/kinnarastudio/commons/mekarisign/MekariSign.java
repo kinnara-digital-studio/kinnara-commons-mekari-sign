@@ -1,10 +1,8 @@
 package com.kinnarastudio.commons.mekarisign;
 
 import com.kinnarastudio.commons.mekarisign.exception.RequestException;
-import com.kinnarastudio.commons.mekarisign.model.AuthenticationToken;
-import com.kinnarastudio.commons.mekarisign.model.GlobalSignRequest;
-import com.kinnarastudio.commons.mekarisign.model.RequestSigner;
-import com.kinnarastudio.commons.mekarisign.model.ServerType;
+import com.kinnarastudio.commons.mekarisign.model.*;
+import com.kinnarastudio.commons.mekarisign.service.AutoSign;
 import com.kinnarastudio.commons.mekarisign.service.Builder;
 import com.kinnarastudio.commons.mekarisign.service.GlobalSigner;
 
@@ -56,7 +54,23 @@ public class MekariSign {
         }
     }
 
-    
+    public void autoSign(InputStream inputStream, ReqAutoSign reqAutoSign) throws RequestException{
+        autoSign(inputStream, reqAutoSign.getDocMakerEmails(), reqAutoSign.getSignerEmails());
+    }
+
+    public void autoSign(InputStream inputStream,  String[] docMakerEmails, String[] signerEmails) throws RequestException {
+        // Implement your logic here
+    }
+
+    public void autoSign(File file,ReqAutoSign reqAutoSign) throws RequestException {
+        try (final InputStream is = Files.newInputStream(file.toPath())) {
+            final String[] docMakerEmails = reqAutoSign.getDocMakerEmails();
+            final String[] signerEmails = reqAutoSign.getSignerEmails();
+            autoSign(is, docMakerEmails, signerEmails);
+        } catch (IOException e) {
+            throw new RequestException(e.getMessage(), e);
+        }
+    }
 
     public void digitalStamp(File file) {
 

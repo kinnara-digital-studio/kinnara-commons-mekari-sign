@@ -27,7 +27,8 @@ public class UnitTest1 {
             final String password = properties.getProperty("password");
 
             final Annotation annotation = new Annotation(AnnotationType.SIGNATURE, 1, 25, 50, 10, 20, 100, 100);
-            final RequestSigner signer = new RequestSigner("Scooby Doo", username, annotation);
+            final Annotation annotation2 = new Annotation(AnnotationType.SIGNATURE, 1, 50, 100, 10, 20, 100, 100);
+            final RequestSigner signer = new RequestSigner("Scooby Doo", username, new Annotation[]{annotation,annotation2});
             final File file = Optional.ofNullable(getClass().getResource("/resources/testing_doc.pdf"))
                     .map(URL::getFile)
                     .map(File::new)

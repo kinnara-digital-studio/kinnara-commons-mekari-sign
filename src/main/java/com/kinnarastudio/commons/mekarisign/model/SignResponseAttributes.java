@@ -1,7 +1,5 @@
 package com.kinnarastudio.commons.mekarisign.model;
 
-import com.kinnarastudio.commons.Try;
-import com.kinnarastudio.commons.jsonstream.JSONStream;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -35,23 +33,11 @@ public class SignResponseAttributes {
 
     public SignResponseAttributes(JSONObject respAttributes) throws ParseException {
         filename = respAttributes.getString("filename");
-        if (respAttributes.getString("categories").equals(AttributeCategory.GLOBAL.toString())) {
-            category = AttributeCategory.GLOBAL;
-        } else {
-            category = AttributeCategory.PSRE;
-        }
+        category = AttributeCategory.parse(respAttributes.getString("category"));
         docUrl = respAttributes.getString("doc_url");
-        if (respAttributes.getString("signing_status").equals(SigningStatus.IN_PROGRESS.toString())) {
-            signingStatus = SigningStatus.IN_PROGRESS;
-        } else if (respAttributes.getString("signing_status").equals(SigningStatus.COMPLETED.toString())) {
-            signingStatus = SigningStatus.COMPLETED;
-        } else if (respAttributes.getString("signing_status").equals(SigningStatus.DECLINED.toString())) {
-            signingStatus = SigningStatus.DECLINED;
-        } else {
-            signingStatus = SigningStatus.VOIDED;
-        }
+        signingStatus = SigningStatus.parse(respAttributes.getString("signing_status"));
         stampingStatus = respAttributes.getString("stamping_status");
-        typeOfMaterai = respAttributes.getString("type_of_materai");
+        typeOfMaterai = respAttributes.getString("type_of_meterai");
         JSONArray getRespSigners = respAttributes.getJSONArray("signers");
         responseSigner = new ResponseSigner[getRespSigners.length()];
         for (int i = 0; i < getRespSigners.length(); i++) {
@@ -62,7 +48,7 @@ public class SignResponseAttributes {
 
         //Mengambil dan mengonversi createdAt dan updateAt dari JSON
         createdAt = Date.from(Instant.parse(respAttributes.getString("created_at")));
-        updatedAt = Date.from(Instant.parse(respAttributes.getString("update_at")));
+        updatedAt = Date.from(Instant.parse(respAttributes.getString("updated_at")));
     }
 
     public String getFilename() {
