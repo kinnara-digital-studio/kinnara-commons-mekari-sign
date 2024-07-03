@@ -61,7 +61,7 @@ public class GlobalSigner {
 
                 final JSONObject jsonResponsePayload = new JSONObject(responsePayload);
                 final GlobalSignResponse globalSignResponse = new GlobalSignResponse(jsonResponsePayload);
-                return globalSignResponse.getData();
+                return globalSignResponse.getData().getAttributes();
             }
         } catch (IOException | JSONException | ParseException e) {
             throw new RequestException("Error authenticating : " + e.getMessage(), e);

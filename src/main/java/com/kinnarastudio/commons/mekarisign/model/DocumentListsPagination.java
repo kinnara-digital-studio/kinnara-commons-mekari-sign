@@ -29,8 +29,8 @@ public class DocumentListsPagination {
     public DocumentListsPagination(JSONObject jsonBody) throws ParseException
     {
         currentPage = jsonBody.getInt("current_page");
-        previous = jsonBody.getInt("previous");
-        next = jsonBody.getInt("next");
+        previous = jsonBody.optInt("previous");
+        next = jsonBody.optInt("next");
         perPage = jsonBody.getInt("per_page");
         totalPage = jsonBody.getInt("total_pages");
         documentCount = jsonBody.getInt("count");

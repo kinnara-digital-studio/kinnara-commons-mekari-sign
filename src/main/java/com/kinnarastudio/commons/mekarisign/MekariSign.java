@@ -4,10 +4,13 @@ import com.kinnarastudio.commons.mekarisign.exception.RequestException;
 import com.kinnarastudio.commons.mekarisign.model.*;
 import com.kinnarastudio.commons.mekarisign.service.AutoSign;
 import com.kinnarastudio.commons.mekarisign.service.Builder;
+import com.kinnarastudio.commons.mekarisign.service.DocumentListGetter;
 import com.kinnarastudio.commons.mekarisign.service.GlobalSigner;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Base64;
 
 public class MekariSign {
@@ -25,9 +28,9 @@ public class MekariSign {
         globalSign(file, new RequestSigner[]{signer});
     }
 
-    public void globalSign(InputStream inputStream, String filename, RequestSigner signer) throws RequestException {
-        globalSign(inputStream, filename, new RequestSigner[]{signer});
-    }
+    // public void globalSign(InputStream inputStream, String filename, RequestSigner signer) throws RequestException {
+    //     globalSign(inputStream, filename, new RequestSigner[]{signer});
+    // }
 
     public void globalSign(File file, RequestSigner[] signers) throws RequestException {
         try (final InputStream is = Files.newInputStream(file.toPath())) {
@@ -58,8 +61,8 @@ public class MekariSign {
         autoSign(inputStream, reqAutoSign.getDocMakerEmails(), reqAutoSign.getSignerEmails());
     }
 
-    public void autoSign(InputStream inputStream,  String[] docMakerEmails, String[] signerEmails) throws RequestException {
-        // Implement your logic here
+    private void autoSign(InputStream inputStream, String[] docMakerEmails, String[] signerEmails) {
+        autoSign(inputStream, new String[]{Arrays.toString(docMakerEmails)}, new String[]{Arrays.toString(signerEmails)});
     }
 
     public void autoSign(File file,ReqAutoSign reqAutoSign) throws RequestException {
@@ -70,6 +73,12 @@ public class MekariSign {
         } catch (IOException e) {
             throw new RequestException(e.getMessage(), e);
         }
+    }
+
+    public void getDoc() throws RequestException, ParseException
+    {
+        DocumentListGetter docListGet = DocumentListGetter.getInstance();
+        docListGet.requestDocs(serverType, authenticationToken);
     }
 
     public void digitalStamp(File file) {

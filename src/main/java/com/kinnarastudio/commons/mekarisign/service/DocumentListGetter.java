@@ -11,18 +11,15 @@ import java.util.stream.Collectors;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.kinnarastudio.commons.mekarisign.exception.RequestException;
 import com.kinnarastudio.commons.mekarisign.model.AuthenticationToken;
-import com.kinnarastudio.commons.mekarisign.model.GetDocumentListsResponse;
+import com.kinnarastudio.commons.mekarisign.model.DocumentListResponse;
+import com.kinnarastudio.commons.mekarisign.model.GetDocumentListBody;
 import com.kinnarastudio.commons.mekarisign.model.ResponseData;
 import com.kinnarastudio.commons.mekarisign.model.ServerType;
 import com.kinnarastudio.commons.mekarisign.model.SignResponseAttributes;
@@ -42,7 +39,7 @@ public class DocumentListGetter {
         return instance;
     }
 
-    public SignResponseAttributes requestDocs(ServerType serverType, AuthenticationToken token) throws RequestException, ParseException
+    public GetDocumentListBody requestDocs(ServerType serverType, AuthenticationToken token) throws RequestException, ParseException
     {
         try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) 
         {
@@ -69,8 +66,8 @@ public class DocumentListGetter {
                 }
 
                 final JSONObject jsonRespArray = new JSONObject(responsePayload);
-                final GetDocumentListsResponse documentListResponse = new GetDocumentListsResponse(jsonRespArray);
-                return documentListResponse.getRespData();
+                final DocumentListResponse documentListResponse = new DocumentListResponse(jsonRespArray);
+                return documentListResponse.getData();
             }
         } catch (IOException | JSONException e) {
             throw new RequestException("Error authenticating : " + e.getMessage(), e);

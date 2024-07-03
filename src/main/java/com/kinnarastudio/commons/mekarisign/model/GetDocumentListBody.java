@@ -8,23 +8,26 @@ import org.json.JSONObject;
 import com.kinnarastudio.commons.Try;
 import com.kinnarastudio.commons.jsonstream.JSONStream;
 
-public class GetDocumentListsResponse {
+public class GetDocumentListBody {
     private final ResponseData[] respData;
     private final DocumentListsPagination docListPagination;
 
-    public GetDocumentListsResponse (ResponseData[] respData, DocumentListsPagination docListPagination)
+    public GetDocumentListBody (ResponseData[] respData, DocumentListsPagination docListPagination)
     {
         this.respData = respData;
         this.docListPagination = docListPagination;
     }
 
-    public GetDocumentListsResponse(JSONObject jsonBody) throws ParseException
+    public GetDocumentListBody(JSONArray jsonArray, JSONObject jsonPagination) throws ParseException
     {
-        respData = JSONStream.of(jsonBody.getJSONArray("data"), JSONArray::getJSONObject)
-                .map(Try.onFunction(ResponseData::new))
-                .toArray(ResponseData[]::new);
-                
-        docListPagination = new DocumentListsPagination(jsonBody.getJSONObject("pagination"));
+        respData = new ResponseData[jsonArray.length()];
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject data = jsonArray.getJSONObject(i);
+            ResponseData resp = new ResponseData(data);
+            respData[i] = resp;
+        }
+
+        docListPagination = new DocumentListsPagination(jsonPagination);
     }
 
     public ResponseData[] getRespData()
