@@ -30,10 +30,6 @@ public class UnitTestAutoSign {
             final String[] docMakerEmails = {"aristo.hadisoeganda@kinnarastudio.com"};
             final String[] signerEmails = {"aristo.hadisoeganda@kinnarastudio.com"};
             final ReqAutoSign req = new ReqAutoSign(docMakerEmails, signerEmails);
-            final File file = Optional.ofNullable(getClass().getResource("/resources/testing_doc.pdf"))
-                    .map(URL::getFile)
-                    .map(File::new)
-                    .orElseThrow(() -> new IOException("Resource not found"));
 
             final MekariSign mekariSign = MekariSign.getBuilder()
                     .setClientId(clientId)
@@ -42,7 +38,7 @@ public class UnitTestAutoSign {
                     .setSecretCode(code)
                     .build();
 
-            mekariSign.autoSign(file, req);
+            mekariSign.autoSign(req);
         } catch (IOException | BuildingException e) {
             throw new RuntimeException(e);
         }

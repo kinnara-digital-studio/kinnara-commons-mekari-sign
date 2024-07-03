@@ -54,21 +54,12 @@ public class MekariSign {
         }
     }
 
-    public void autoSign(InputStream inputStream, ReqAutoSign reqAutoSign) throws RequestException{
-        autoSign(inputStream, reqAutoSign.getDocMakerEmails(), reqAutoSign.getSignerEmails());
-    }
-
-    public void autoSign(InputStream inputStream,  String[] docMakerEmails, String[] signerEmails) throws RequestException {
-        // Implement your logic here
-    }
-
-    public void autoSign(File file,ReqAutoSign reqAutoSign) throws RequestException {
-        try (final InputStream is = Files.newInputStream(file.toPath())) {
-            final String[] docMakerEmails = reqAutoSign.getDocMakerEmails();
-            final String[] signerEmails = reqAutoSign.getSignerEmails();
-            autoSign(is, docMakerEmails, signerEmails);
+    public void autoSign(ReqAutoSign reqAutoSign) throws RequestException{
+        final AutoSign autoSign = AutoSign.getInstance();
+        try {
+            autoSign.requestAutoSign(serverType, authenticationToken, reqAutoSign);
         } catch (IOException e) {
-            throw new RequestException(e.getMessage(), e);
+            throw new RuntimeException(e);
         }
     }
 

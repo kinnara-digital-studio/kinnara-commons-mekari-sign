@@ -34,6 +34,7 @@ public class AutoSign {
     }
 
     public RespDataAutoSign[] requestAutoSign(ServerType serverType, AuthenticationToken token, ReqAutoSign reqAutoSign) throws RequestException, IOException {
+
         try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
             final URL baseUrl = serverType.getBaseUrl();
             final  String urlAuto = baseUrl + "/v2/esign/v1/auto_sign";
@@ -54,6 +55,7 @@ public class AutoSign {
                  final BufferedReader bufferedReader = new BufferedReader(reader)) {
 
                 final String responsePayload = bufferedReader.lines().collect(Collectors.joining());
+                System.out.println(responsePayload);
 
                 final int statusCode = response.getStatusLine().getStatusCode();
                 if (statusCode != 200) {
@@ -68,11 +70,9 @@ public class AutoSign {
                 throw new RequestException("Error authenticating : " + e.getMessage(), e);
             }
         } catch (IOException e) {
-            System.err.println("IOException: " + e.getMessage());
-            throw e;
+            throw new RequestException("IOException: " + e.getMessage(), e);
         } catch (RequestException e) {
-            System.err.println("RequestException: " + e.getMessage());
-            throw e;
+            throw new RequestException("RequestException: " + e.getMessage(), e);
         }
     }
 }
