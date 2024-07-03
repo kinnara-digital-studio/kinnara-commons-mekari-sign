@@ -1,7 +1,8 @@
 import com.kinnarastudio.commons.mekarisign.MekariSign;
 import com.kinnarastudio.commons.mekarisign.exception.BuildingException;
 import com.kinnarastudio.commons.mekarisign.exception.RequestException;
-import com.kinnarastudio.commons.mekarisign.model.*;
+import com.kinnarastudio.commons.mekarisign.model.ReqAutoSign;
+import com.kinnarastudio.commons.mekarisign.model.ServerType;
 import org.junit.Test;
 
 import java.io.File;
@@ -11,10 +12,10 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.Properties;
 
-public class UnitTest1 {
+public class UnitTestAutoSign {
     @Test
-    public void globalSignerRequestSign() throws RequestException {
-        try (final InputStream is = getClass().getResourceAsStream("/properties/secret.properties")) {
+    public void requestAutoSign() throws RequestException {
+        try(final InputStream is = getClass().getResourceAsStream("/properties/secret.properties")) {
 
             final Properties properties = new Properties() {{
                 load(is);
@@ -26,9 +27,9 @@ public class UnitTest1 {
             final String username = properties.getProperty("username");
             final String password = properties.getProperty("password");
 
-            final Annotation annotation = new Annotation(AnnotationType.SIGNATURE, 1, 25, 50, 10, 20, 100, 100);
-            final Annotation annotation2 = new Annotation(AnnotationType.SIGNATURE, 1, 50, 100, 10, 20, 100, 100);
-            final RequestSigner signer = new RequestSigner("Scooby Doo", username, new Annotation[]{annotation,annotation2});
+            final String[] docMakerEmails = {"aristo.hadisoeganda@kinnarastudio.com"};
+            final String[] signerEmails = {"aristo.hadisoeganda@kinnarastudio.com"};
+            final ReqAutoSign req = new ReqAutoSign(docMakerEmails, signerEmails);
             final File file = Optional.ofNullable(getClass().getResource("/resources/testing_doc.pdf"))
                     .map(URL::getFile)
                     .map(File::new)
@@ -41,8 +42,7 @@ public class UnitTest1 {
                     .setSecretCode(code)
                     .build();
 
-            mekariSign.globalSign(file, signer);
-
+            mekariSign.autoSign(file, req);
         } catch (IOException | BuildingException e) {
             throw new RuntimeException(e);
         }

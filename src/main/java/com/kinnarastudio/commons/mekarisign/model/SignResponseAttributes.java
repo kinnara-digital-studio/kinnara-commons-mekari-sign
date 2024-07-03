@@ -1,7 +1,5 @@
 package com.kinnarastudio.commons.mekarisign.model;
 
-import com.kinnarastudio.commons.Try;
-import com.kinnarastudio.commons.jsonstream.JSONStream;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -39,7 +37,7 @@ public class SignResponseAttributes {
         docUrl = respAttributes.getString("doc_url");
         signingStatus = SigningStatus.parse(respAttributes.getString("signing_status"));
         stampingStatus = respAttributes.getString("stamping_status");
-        typeOfMaterai = respAttributes.optString("type_of_meterai");
+        typeOfMaterai = respAttributes.getString("type_of_meterai");
         JSONArray getRespSigners = respAttributes.getJSONArray("signers");
         responseSigner = new ResponseSigner[getRespSigners.length()];
         for (int i = 0; i < getRespSigners.length(); i++) {
