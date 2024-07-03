@@ -9,35 +9,31 @@ import com.kinnarastudio.commons.Try;
 import com.kinnarastudio.commons.jsonstream.JSONStream;
 
 public class GetDocumentListsResponse {
-    private final SignResponseAttributes[] signResponseAttributes;
-    private final int currentPage;
-    private final int previous;
-    private final int next;
-    private final int perPage;
-    private final int totalPage;
-    private final int documentCount;
+    private final ResponseData[] respData;
+    private final DocumentListsPagination docListPagination;
 
-    public GetDocumentListsResponse (SignResponseAttributes[] signResponseAttributes, int currentPage, int previous, int next, int perPage, int totalPage, int documentCount)
+    public GetDocumentListsResponse (ResponseData[] respData, DocumentListsPagination docListPagination)
     {
-        this.signResponseAttributes = signResponseAttributes;
-        this.currentPage = currentPage;
-        this.previous = previous;
-        this.next = next;
-        this.perPage = perPage;
-        this.totalPage = totalPage;
-        this.documentCount = documentCount;
+        this.respData = respData;
+        this.docListPagination = docListPagination;
     }
 
     public GetDocumentListsResponse(JSONObject jsonBody) throws ParseException
     {
-        signResponseAttributes = JSONStream.of(jsonBody.getJSONArray("data"), JSONArray::getJSONObject)
-                .map(Try.onFunction(SignResponseAttributes::new))
-                .toArray(SignResponseAttributes[]::new);
-        currentPage = jsonBody.getInt("current_page");
-        previous = jsonBody.getInt("previous");
-        next = jsonBody.getInt("next");
-        perPage = jsonBody.getInt("per_page");
-        totalPage = jsonBody.getInt("total_pages");
-        documentCount = jsonBody.getInt("count");
+        respData = JSONStream.of(jsonBody.getJSONArray("data"), JSONArray::getJSONObject)
+                .map(Try.onFunction(ResponseData::new))
+                .toArray(ResponseData[]::new);
+                
+        docListPagination = new DocumentListsPagination(jsonBody.getJSONObject("pagination"));
+    }
+
+    public ResponseData[] getRespData()
+    {
+        return respData;
+    }
+
+    public DocumentListsPagination getDocListPagination()
+    {
+        return docListPagination;
     }
 }

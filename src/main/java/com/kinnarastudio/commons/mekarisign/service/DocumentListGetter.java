@@ -68,9 +68,9 @@ public class DocumentListGetter {
                     throw new RequestException("HTTP response code [" + statusCode + "] response [" + responsePayload + "]");
                 }
 
-                final JSONArray jsonRespArray = new JSONArray(responsePayload);
-                final ResponseData documentListResponse = new ResponseData(jsonRespArray);
-                return documentListResponse.getAttributes();
+                final JSONObject jsonRespArray = new JSONObject(responsePayload);
+                final GetDocumentListsResponse documentListResponse = new GetDocumentListsResponse(jsonRespArray);
+                return documentListResponse.getRespData();
             }
         } catch (IOException | JSONException e) {
             throw new RequestException("Error authenticating : " + e.getMessage(), e);
