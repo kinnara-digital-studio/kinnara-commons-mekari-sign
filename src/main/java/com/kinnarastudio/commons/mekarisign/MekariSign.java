@@ -6,6 +6,7 @@ import com.kinnarastudio.commons.mekarisign.service.AutoSign;
 import com.kinnarastudio.commons.mekarisign.service.Builder;
 import com.kinnarastudio.commons.mekarisign.service.DocumentListGetter;
 import com.kinnarastudio.commons.mekarisign.service.GlobalSigner;
+import com.kinnarastudio.commons.mekarisign.service.UserProfile;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -79,6 +80,12 @@ public class MekariSign {
     {
         DocumentListGetter docListGet = DocumentListGetter.getInstance();
         docListGet.requestDocs(serverType, authenticationToken);
+    }
+
+    public void getProfile() throws RequestException, ParseException
+    {
+        UserProfile userProfile = UserProfile.getInstance();
+        userProfile.requestProfile(serverType, authenticationToken);
     }
 
     public void digitalStamp(File file) {

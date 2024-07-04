@@ -8,7 +8,6 @@ import java.net.URL;
 import java.text.ParseException;
 import java.util.stream.Collectors;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -18,34 +17,32 @@ import org.json.JSONObject;
 
 import com.kinnarastudio.commons.mekarisign.exception.RequestException;
 import com.kinnarastudio.commons.mekarisign.model.AuthenticationToken;
-import com.kinnarastudio.commons.mekarisign.model.DocumentListResponse;
-import com.kinnarastudio.commons.mekarisign.model.GetDocumentListBody;
-import com.kinnarastudio.commons.mekarisign.model.ResponseData;
+import com.kinnarastudio.commons.mekarisign.model.ProfileData;
 import com.kinnarastudio.commons.mekarisign.model.ServerType;
-import com.kinnarastudio.commons.mekarisign.model.SignResponseAttributes;
 import com.kinnarastudio.commons.mekarisign.model.TokenType;
+import com.kinnarastudio.commons.mekarisign.model.UserProfileModel;
 
-public class DocumentListGetter {
-    private static DocumentListGetter instance = null;
+public class UserProfile {
+    private static UserProfile instance = null;
     
-    private DocumentListGetter() {
+    private UserProfile() {
     }
 
-    public static DocumentListGetter getInstance() {
+    public static UserProfile getInstance() {
         if (instance == null) {
-            instance = new DocumentListGetter();
+            instance = new UserProfile();
         }
 
         return instance;
     }
 
-    public GetDocumentListBody requestDocs(ServerType serverType, AuthenticationToken token) throws RequestException, ParseException
+    public ProfileData requestProfile(ServerType serverType, AuthenticationToken token) throws RequestException, ParseException
     {
         try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) 
         {
 
             final URL baseUrl = serverType.getBaseUrl();
-            final String urlGlobal = baseUrl + "/v2/esign/v1/documents?page=1&limit=8&category=global&signing_status=completed&stamping_status=none";
+            final String urlGlobal = baseUrl + "/v2/esign/v1/profile";
 
             final HttpGet get = new HttpGet(urlGlobal) {{
                 if (token.getTokenType() == TokenType.BEARER) {
@@ -68,8 +65,8 @@ public class DocumentListGetter {
                 }
 
                 final JSONObject jsonRespArray = new JSONObject(responsePayload);
-                final DocumentListResponse documentListResponse = new DocumentListResponse(jsonRespArray);
-                return documentListResponse.getData();
+                final UserProfileModel userProfileResponse = new UserProfileModel(jsonRespArray);
+                return userProfileResponse.getData();
             }
         } catch (IOException | JSONException e) {
             throw new RequestException("Error authenticating : " + e.getMessage(), e);
