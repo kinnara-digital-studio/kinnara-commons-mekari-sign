@@ -25,6 +25,7 @@ import com.kinnarastudio.commons.mekarisign.model.ServerType;
 import com.kinnarastudio.commons.mekarisign.model.SignResponseAttributes;
 import com.kinnarastudio.commons.mekarisign.model.SignerStatus;
 import com.kinnarastudio.commons.mekarisign.model.SigningStatus;
+import com.kinnarastudio.commons.mekarisign.model.StampingStatus;
 import com.kinnarastudio.commons.mekarisign.model.TokenType;
 
 public class DocumentListGetter {
@@ -41,7 +42,7 @@ public class DocumentListGetter {
         return instance;
     }
 
-    public GetDocumentListBody requestDocs(ServerType serverType, AuthenticationToken token, int page, int limit, SigningStatus status, String stamping) throws RequestException, ParseException
+    public GetDocumentListBody requestDocs(ServerType serverType, AuthenticationToken token, int page, int limit, SigningStatus status, StampingStatus stamping) throws RequestException, ParseException
     {
         try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) 
         {

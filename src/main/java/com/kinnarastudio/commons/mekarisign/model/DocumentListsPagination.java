@@ -35,4 +35,33 @@ public class DocumentListsPagination {
         totalPage = jsonBody.getInt("total_pages");
         documentCount = jsonBody.getInt("count");
     }
+
+    public int getCurrentPage()
+    {
+        return currentPage;
+    }
+
+    public int getPrevious()
+    {
+        return previous;
+    }
+
+    public int getNext()
+    {
+        return next;
+    }
+
+    public int getPerPage()
+    {
+        return perPage;
+    }
+
+    public int getTotalPage()
+    {
+        return totalPage;
+    }
+    public int getDocumentCount()
+    {
+        return documentCount;
+    }
 }
