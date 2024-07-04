@@ -22,4 +22,9 @@ public enum SigningStatus {
                 throw new ParseException("Error [" + SigningStatus.class.getName() + "] parsing [" + value + "]", 0);
         }
     }
+
+    @Override
+    public String toString() {
+        return super.toString().toLowerCase();
+    }
 }

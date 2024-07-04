@@ -23,6 +23,8 @@ import com.kinnarastudio.commons.mekarisign.model.GetDocumentListBody;
 import com.kinnarastudio.commons.mekarisign.model.ResponseData;
 import com.kinnarastudio.commons.mekarisign.model.ServerType;
 import com.kinnarastudio.commons.mekarisign.model.SignResponseAttributes;
+import com.kinnarastudio.commons.mekarisign.model.SignerStatus;
+import com.kinnarastudio.commons.mekarisign.model.SigningStatus;
 import com.kinnarastudio.commons.mekarisign.model.TokenType;
 
 public class DocumentListGetter {
@@ -39,13 +41,24 @@ public class DocumentListGetter {
         return instance;
     }
 
-    public GetDocumentListBody requestDocs(ServerType serverType, AuthenticationToken token) throws RequestException, ParseException
+    public GetDocumentListBody requestDocs(ServerType serverType, AuthenticationToken token, int page, int limit, SigningStatus status, String stamping) throws RequestException, ParseException
     {
         try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) 
         {
 
             final URL baseUrl = serverType.getBaseUrl();
-            final String urlGlobal = baseUrl + "/v2/esign/v1/documents?page=1&limit=8&category=global&signing_status=completed&stamping_status=none";
+            String urlGlobal = baseUrl + "/v2/esign/v1/documents?page="+ page +"&limit="+ limit;
+
+            System.out.println("Status: " + status);
+            if (status != null)
+            {
+                urlGlobal += "&signing_status="+ status;
+            }
+
+            if (stamping != null)
+            {
+                urlGlobal += "&stamping_status=" + stamping;
+            }
 
             final HttpGet get = new HttpGet(urlGlobal) {{
                 if (token.getTokenType() == TokenType.BEARER) {

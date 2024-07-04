@@ -76,10 +76,10 @@ public class MekariSign {
         }
     }
 
-    public void getDoc() throws RequestException, ParseException
+    public void getDoc(int page, int limit, SigningStatus status, String stamping) throws RequestException, ParseException
     {
         DocumentListGetter docListGet = DocumentListGetter.getInstance();
-        docListGet.requestDocs(serverType, authenticationToken);
+        docListGet.requestDocs(serverType, authenticationToken, page, limit, status, stamping);
     }
 
     public void getProfile() throws RequestException, ParseException
