@@ -62,8 +62,6 @@ public class PSrESigner {
                  final BufferedReader bufferedReader = new BufferedReader(reader)) {
 
                 final String responsePayload = bufferedReader.lines().collect(Collectors.joining());
-                
-                System.out.println(responsePayload);
 
                 final int statusCode = response.getStatusLine().getStatusCode();
                 if (statusCode != 200) {

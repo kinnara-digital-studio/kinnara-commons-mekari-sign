@@ -57,16 +57,14 @@ public class DocumentDetail {
 
                 final String responsePayload = bufferedReader.lines().collect(Collectors.joining());
 
-                System.out.println(responsePayload);
-
                 final int statusCode = response.getStatusLine().getStatusCode();
                 if (statusCode != 200) {
                     throw new RequestException("HTTP response code [" + statusCode + "] response [" + responsePayload + "]");
                 }
 
                 final JSONObject jsonRespArray = new JSONObject(responsePayload);
-                final GlobalSignResponse documentListResponse = new GlobalSignResponse(jsonRespArray);
-                return documentListResponse.getData().getAttributes();
+                final GlobalSignResponse globalSignResponse = new GlobalSignResponse(jsonRespArray);
+                return globalSignResponse.getData().getAttributes();
             }
         } catch (IOException | JSONException e) {
             throw new RequestException("Error authenticating : " + e.getMessage(), e);

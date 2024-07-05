@@ -57,8 +57,6 @@ public class UserProfile {
 
                 final String responsePayload = bufferedReader.lines().collect(Collectors.joining());
 
-                System.out.println(responsePayload);
-
                 final int statusCode = response.getStatusLine().getStatusCode();
                 if (statusCode != 200) {
                     throw new RequestException("HTTP response code [" + statusCode + "] response [" + responsePayload + "]");
