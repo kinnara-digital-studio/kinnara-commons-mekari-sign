@@ -1,7 +1,9 @@
 import com.kinnarastudio.commons.mekarisign.MekariSign;
 import com.kinnarastudio.commons.mekarisign.exception.BuildingException;
 import com.kinnarastudio.commons.mekarisign.exception.RequestException;
-import com.kinnarastudio.commons.mekarisign.model.ReqAutoSign;
+import com.kinnarastudio.commons.mekarisign.model.Annotation;
+import com.kinnarastudio.commons.mekarisign.model.AnnotationType;
+import com.kinnarastudio.commons.mekarisign.model.RequestSigner;
 import com.kinnarastudio.commons.mekarisign.model.ServerType;
 import org.junit.Test;
 
@@ -12,11 +14,11 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.Properties;
 
-public class UnitTestAutoSign {
-    @Test
-    public void requestAutoSign() throws RequestException {
-        try(final InputStream is = getClass().getResourceAsStream("/properties/secret.properties")) {
+public class UnitTestPSrE {
 
+    @Test
+    public void psreReqSign () throws RuntimeException {
+        try (final InputStream is = getClass().getResourceAsStream("/properties/secret.properties")) {
             final Properties properties = new Properties() {{
                 load(is);
             }};
@@ -27,9 +29,13 @@ public class UnitTestAutoSign {
             final String username = properties.getProperty("username");
             final String password = properties.getProperty("password");
 
-            final String[] docMakerEmails = {"aristo.hadisoeganda@kinnarastudio.com"};
-            final String[] signerEmails = {"aristo.hadisoeganda@kinnarastudio.com"};
-            final ReqAutoSign req = new ReqAutoSign(docMakerEmails, signerEmails);
+            final Annotation annotation = new Annotation(AnnotationType.SIGNATURE, 1, 25, 50, 10, 20, 100, 100);
+            final Annotation annotation2 = new Annotation(AnnotationType.SIGNATURE, 1, 50, 100, 10, 20, 100, 100);
+            final RequestSigner signer = new RequestSigner("Scooby Doo", username, new Annotation[]{annotation,annotation2});
+            final File file = Optional.ofNullable(getClass().getResource("/resources/testing_doc.pdf"))
+                    .map(URL::getFile)
+                    .map(File::new)
+                    .orElseThrow(() -> new IOException("Resource not found"));
 
             final MekariSign mekariSign = MekariSign.getBuilder()
                     .setClientId(clientId)
@@ -38,8 +44,9 @@ public class UnitTestAutoSign {
                     .setSecretCode(code)
                     .build();
 
-            mekariSign.autoSign(req);
-        } catch (IOException | BuildingException e) {
+            mekariSign.psreSign(file, signer);
+
+        } catch (IOException | BuildingException | RequestException e) {
             throw new RuntimeException(e);
         }
     }

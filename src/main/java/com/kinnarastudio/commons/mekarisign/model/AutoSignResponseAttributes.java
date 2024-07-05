@@ -37,12 +37,18 @@ public class AutoSignResponseAttributes {
         this.docMakerEmail = respAttributes.getString("doc_maker_email");
         this.signerId = respAttributes.getString("signer_id");
         this.signerEmail = respAttributes.getString("signer_email");
-        this.approvedAt = Date.from(Instant.parse(respAttributes.getString("approved_at")));
+
+        String approved = respAttributes.optString("approved_at",null);
+        this.approvedAt = (approved != null) ? Date.from(Instant.parse(approved)) : null;
+
         this.createdBy = respAttributes.getString("created_by");
-        this.createdAt = Date.from(Instant.parse(respAttributes.getString("createdAt")));
+        this.createdAt = Date.from(Instant.parse(respAttributes.getString("created_at")));
         this.updatedAt = Date.from(Instant.parse(respAttributes.getString("updated_at")));
-        this.deletedBY = respAttributes.getString("deleted_by");
-        this.deletedAt = Date.from(Instant.parse(respAttributes.getString("deleted_at")));
+
+        this.deletedBY = respAttributes.optString("deleted_by", null);
+
+        String delete = respAttributes.optString("deleted_at",null);
+        this.deletedAt = (delete != null) ? Date.from(Instant.parse(delete)) : null;
     }
 
     public String getDocMakerId() {

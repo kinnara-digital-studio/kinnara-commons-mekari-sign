@@ -1,12 +1,12 @@
 package com.kinnarastudio.commons.mekarisign.service;
 
 import com.kinnarastudio.commons.mekarisign.exception.RequestException;
-import com.kinnarastudio.commons.mekarisign.model.*;
-import org.apache.http.HttpEntity;
+import com.kinnarastudio.commons.mekarisign.model.AuthenticationToken;
+import com.kinnarastudio.commons.mekarisign.model.AutoSignResponse;
+import com.kinnarastudio.commons.mekarisign.model.ServerType;
+import com.kinnarastudio.commons.mekarisign.model.TokenType;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.json.JSONObject;
@@ -17,39 +17,41 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
-public class AutoSign {
-    private static AutoSign instance = null;
+public class DeleteAutoSign {
+    private static DeleteAutoSign instance = null;
 
-    private AutoSign() {
-
+    private DeleteAutoSign() {
     }
 
-    public static AutoSign getInstance() {
+    public static DeleteAutoSign getInstance() {
         if (instance == null) {
-            instance = new AutoSign();
+            instance = new DeleteAutoSign();
         }
         return instance;
     }
 
-    public RespDataAutoSign[] requestAutoSign(ServerType serverType, AuthenticationToken token, ReqAutoSign reqAutoSign) throws RequestException, IOException {
-
+    public AutoSignResponse deleteAutoSign(ServerType serverType, AuthenticationToken token, String autoSignId) throws RequestException, IOException {
         try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
             final URL baseUrl = serverType.getBaseUrl();
-            final  String urlAuto = baseUrl + "/v2/esign/v1/auto_sign";
-            final JSONObject requestJson = reqAutoSign.toJson();
+            final String delAutoSign = baseUrl + "/v2/esign/v1/auto_sign/" + autoSignId;
 
-            final HttpPost post = new HttpPost(urlAuto) {{
-                if(token.getTokenType() == TokenType.BEARER) {
-                    addHeader("Authorization", "Bearer " + token.getAccessToken());
-                }
+            final HttpDelete delete = new HttpDelete(delAutoSign);
+            if (token.getTokenType() == TokenType.BEARER) {
+                delete.addHeader("Authorization", "Bearer " + token.getAccessToken());
+            }
 
-                final HttpEntity httpEntity = new StringEntity(requestJson.toString(), ContentType.APPLICATION_JSON);
-                setEntity(httpEntity);
-            }};
+            // Membuat format tanggal sesuai dengan standar HTTP
+            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
+            dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+            String httpDate = dateFormat.format(Calendar.getInstance().getTime());
+            delete.addHeader("Date", httpDate);
 
-            final HttpResponse response = httpClient.execute(post);
+            final HttpResponse response = httpClient.execute(delete);
 
             try (final Reader reader = new InputStreamReader(response.getEntity().getContent());
                  final BufferedReader bufferedReader = new BufferedReader(reader)) {
@@ -63,9 +65,7 @@ public class AutoSign {
                 }
 
                 final JSONObject jsonResponsePayload = new JSONObject(responsePayload);
-                final AutoSignResponse autoResponse = new AutoSignResponse(jsonResponsePayload);
-                return autoResponse.getRespData();
-
+                return new AutoSignResponse(jsonResponsePayload);
             }
         } catch (IOException | ParseException e) {
             throw new RequestException(e.getMessage(), e);

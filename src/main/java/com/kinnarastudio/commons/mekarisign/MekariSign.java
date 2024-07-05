@@ -2,11 +2,7 @@ package com.kinnarastudio.commons.mekarisign;
 
 import com.kinnarastudio.commons.mekarisign.exception.RequestException;
 import com.kinnarastudio.commons.mekarisign.model.*;
-import com.kinnarastudio.commons.mekarisign.service.AutoSign;
-import com.kinnarastudio.commons.mekarisign.service.Builder;
-import com.kinnarastudio.commons.mekarisign.service.DocumentListGetter;
-import com.kinnarastudio.commons.mekarisign.service.GlobalSigner;
-import com.kinnarastudio.commons.mekarisign.service.UserProfile;
+import com.kinnarastudio.commons.mekarisign.service.*;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -60,19 +56,22 @@ public class MekariSign {
         }
     }
 
-    public void autoSign(InputStream inputStream, ReqAutoSign reqAutoSign) throws RequestException{
-        autoSign(inputStream, reqAutoSign.getDocMakerEmails(), reqAutoSign.getSignerEmails());
+    public void psreSign(File file, RequestSigner reqSigner) throws RequestException{
+        psreSign(file, new RequestSigner[]{reqSigner});
     }
 
     private void autoSign(InputStream inputStream, String[] docMakerEmails, String[] signerEmails) {
         autoSign(inputStream, new String[]{Arrays.toString(docMakerEmails)}, new String[]{Arrays.toString(signerEmails)});
     }
 
-    public void autoSign(File file,ReqAutoSign reqAutoSign) throws RequestException {
+    public void psreSign(InputStream inputStream, String filename, RequestSigner signer) throws RequestException {
+        psreSign(inputStream, filename, new RequestSigner[]{signer});
+    }
+
+    public void psreSign(File file, RequestSigner[] signers) throws RequestException {
         try (final InputStream is = Files.newInputStream(file.toPath())) {
-            final String[] docMakerEmails = reqAutoSign.getDocMakerEmails();
-            final String[] signerEmails = reqAutoSign.getSignerEmails();
-            autoSign(is, docMakerEmails, signerEmails);
+            final String filename = file.getName();
+            psreSign(is, filename, signers);
         } catch (IOException e) {
             throw new RequestException(e.getMessage(), e);
         }
@@ -88,6 +87,40 @@ public class MekariSign {
     {
         UserProfile userProfile = UserProfile.getInstance();
         userProfile.requestProfile(serverType, authenticationToken);
+    }
+    
+    public void psreSign(InputStream inputStream, String filename, RequestSigner[] signers) throws RequestException {
+        try (final ByteArrayOutputStream bos = new ByteArrayOutputStream(BYTE_ARRAY_BUFFER_SIZE)) {
+            final Base64.Encoder encoder = Base64.getEncoder();
+            final byte[] buffer = new byte[BYTE_ARRAY_BUFFER_SIZE];
+            while (inputStream.read(buffer) > 0) {
+                bos.write(buffer);
+            }
+
+            final String doc = encoder.encodeToString(bos.toByteArray());
+            final PSrESigner psre = PSrESigner.getInstance();
+            psre.requestSign(serverType, authenticationToken, new GlobalSignRequest(filename, doc, signers));
+        } catch (IOException e) {
+            throw new RequestException(e.getMessage(), e);
+        }
+    }
+
+    public void autoSign(ReqAutoSign reqAutoSign) throws RequestException{
+        final AutoSign autoSign = AutoSign.getInstance();
+        try {
+            autoSign.requestAutoSign(serverType, authenticationToken, reqAutoSign);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void deleteAutoSign(String autoSignId) throws RequestException {
+        final DeleteAutoSign delete = DeleteAutoSign.getInstance();
+        try {
+            delete.deleteAutoSign(serverType, authenticationToken, autoSignId);
+        }  catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void digitalStamp(File file) {
