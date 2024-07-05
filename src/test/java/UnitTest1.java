@@ -82,6 +82,34 @@ public class UnitTest1 {
     }
 
     @Test
+    public void documentListDetail() throws RequestException, BuildingException, ParseException {
+        try (final InputStream is = getClass().getResourceAsStream("/properties/secret.properties")) {
+
+            final Properties properties = new Properties() {{
+                load(is);
+            }};
+
+            final String clientId = properties.getProperty("clientId");
+            final String clientSecret = properties.getProperty("clientSecret");
+            final String code = properties.getProperty("secretCode");
+            final String username = properties.getProperty("username");
+            final String password = properties.getProperty("password");
+
+            final MekariSign mekariSign = MekariSign.getBuilder()
+                    .setClientId(clientId)
+                    .setClientSecret(clientSecret)
+                    .setServerType(ServerType.SANDBOX)
+                    .setSecretCode(code)
+                    .build();
+
+            mekariSign.getDocDetail("01ec84e4-f8b4-449b-9429-ffff8c1a764b");;
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
     public void userProfile() throws RequestException, BuildingException, ParseException {
         try (final InputStream is = getClass().getResourceAsStream("/properties/secret.properties")) {
 

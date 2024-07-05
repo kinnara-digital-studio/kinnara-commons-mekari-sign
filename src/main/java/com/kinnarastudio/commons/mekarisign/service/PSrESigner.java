@@ -16,6 +16,7 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.Base64;
 import java.util.stream.Collectors;
 
@@ -33,7 +34,7 @@ public class PSrESigner {
 
         return instance;
     }
-    public void requestSign(ServerType serverType, AuthenticationToken token, GlobalSignRequest globalSignRequest) throws RequestException {
+    public SignResponseAttributes requestSign(ServerType serverType, AuthenticationToken token, GlobalSignRequest globalSignRequest) throws RequestException, ParseException {
         final RequestSigner[] signers = globalSignRequest.getSigners();
         final boolean signingOrder = globalSignRequest.isSigningOrder();
         final String callbackUrl = globalSignRequest.getCallbackUrl();
@@ -57,28 +58,30 @@ public class PSrESigner {
             final HttpResponse response = httpClient.execute(post);
 
             // Mengirim permintaan POST dan menerima response
-            try (Reader reader = new InputStreamReader(response.getEntity().getContent());
-                 BufferedReader bufferedReader = new BufferedReader(reader)) {
+            try (final Reader reader = new InputStreamReader(response.getEntity().getContent());
+                 final BufferedReader bufferedReader = new BufferedReader(reader)) {
 
                 final String responsePayload = bufferedReader.lines().collect(Collectors.joining());
-                final JSONObject jsonResponsePayload = new JSONObject(responsePayload);
+                
+                System.out.println(responsePayload);
 
-                final String id = jsonResponsePayload.getString("id");
-
-                final String tokenType = jsonResponsePayload.getString("token_type");
-
-                if (!tokenType.equalsIgnoreCase(TokenType.BEARER.toString())) {
-                    throw new AuthenticationException();
+                final int statusCode = response.getStatusLine().getStatusCode();
+                if (statusCode != 200) {
+                    throw new RequestException("HTTP response code [" + statusCode + "] response [" + responsePayload + "]");
                 }
+
+                final JSONObject jsonResponsePayload = new JSONObject(responsePayload);
+                final GlobalSignResponse globalSignResponse = new GlobalSignResponse(jsonResponsePayload);
+                return globalSignResponse.getData().getAttributes();
             }
 
-            final int statusCode = response.getStatusLine().getStatusCode();
+            // final int statusCode = response.getStatusLine().getStatusCode();
 
-            if (statusCode != 200) {
-                throw new RequestException("HTTP response code [" + statusCode + "]");
-            }
+            // if (statusCode != 200) {
+            //     throw new RequestException("HTTP response code [" + statusCode + "]");
+            // }
 
-        } catch (IOException | JSONException | AuthenticationException e) {
+        } catch (IOException | JSONException e) {
             throw new RequestException(e.getMessage(), e);
         }
     }

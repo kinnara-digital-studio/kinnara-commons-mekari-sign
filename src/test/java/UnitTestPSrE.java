@@ -11,13 +11,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.Optional;
 import java.util.Properties;
 
 public class UnitTestPSrE {
 
     @Test
-    public void psreReqSign () throws RuntimeException {
+    public void psreReqSign () throws RuntimeException, ParseException {
         try (final InputStream is = getClass().getResourceAsStream("/properties/secret.properties")) {
             final Properties properties = new Properties() {{
                 load(is);
@@ -31,8 +32,8 @@ public class UnitTestPSrE {
 
             final Annotation annotation = new Annotation(AnnotationType.SIGNATURE, 1, 25, 50, 10, 20, 100, 100);
             final Annotation annotation2 = new Annotation(AnnotationType.SIGNATURE, 1, 50, 100, 10, 20, 100, 100);
-            final RequestSigner signer = new RequestSigner("Scooby Doo", username, new Annotation[]{annotation,annotation2});
-            final File file = Optional.ofNullable(getClass().getResource("/resources/testing_doc.pdf"))
+            final RequestSigner signer = new RequestSigner("Shaggy Doo", "signer2@yopmail.com", new Annotation[]{annotation,annotation2});
+            final File file = Optional.ofNullable(getClass().getResource("/resources/testing_doc1.pdf"))
                     .map(URL::getFile)
                     .map(File::new)
                     .orElseThrow(() -> new IOException("Resource not found"));

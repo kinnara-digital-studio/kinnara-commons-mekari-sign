@@ -56,7 +56,7 @@ public class MekariSign {
         }
     }
 
-    public void psreSign(File file, RequestSigner reqSigner) throws RequestException{
+    public void psreSign(File file, RequestSigner reqSigner) throws RequestException, ParseException{
         psreSign(file, new RequestSigner[]{reqSigner});
     }
 
@@ -64,11 +64,11 @@ public class MekariSign {
         autoSign(inputStream, new String[]{Arrays.toString(docMakerEmails)}, new String[]{Arrays.toString(signerEmails)});
     }
 
-    public void psreSign(InputStream inputStream, String filename, RequestSigner signer) throws RequestException {
+    public void psreSign(InputStream inputStream, String filename, RequestSigner signer) throws RequestException, ParseException {
         psreSign(inputStream, filename, new RequestSigner[]{signer});
     }
 
-    public void psreSign(File file, RequestSigner[] signers) throws RequestException {
+    public void psreSign(File file, RequestSigner[] signers) throws RequestException, ParseException {
         try (final InputStream is = Files.newInputStream(file.toPath())) {
             final String filename = file.getName();
             psreSign(is, filename, signers);
@@ -88,8 +88,14 @@ public class MekariSign {
         UserProfile userProfile = UserProfile.getInstance();
         userProfile.requestProfile(serverType, authenticationToken);
     }
+
+    public void getDocDetail(String id) throws RequestException, ParseException
+    {
+        DocumentDetail docListDetail = DocumentDetail.getInstance();
+        docListDetail.requestDocs(serverType, authenticationToken, id);
+    }
     
-    public void psreSign(InputStream inputStream, String filename, RequestSigner[] signers) throws RequestException {
+    public void psreSign(InputStream inputStream, String filename, RequestSigner[] signers) throws RequestException, ParseException {
         try (final ByteArrayOutputStream bos = new ByteArrayOutputStream(BYTE_ARRAY_BUFFER_SIZE)) {
             final Base64.Encoder encoder = Base64.getEncoder();
             final byte[] buffer = new byte[BYTE_ARRAY_BUFFER_SIZE];
