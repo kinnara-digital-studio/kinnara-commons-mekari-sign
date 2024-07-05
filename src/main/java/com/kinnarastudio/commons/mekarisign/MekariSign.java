@@ -94,6 +94,31 @@ public class MekariSign {
         DocumentDetail docListDetail = DocumentDetail.getInstance();
         docListDetail.requestDocs(serverType, authenticationToken, id);
     }
+
+    public void downloadDoc(String id, File file) throws RequestException
+    {
+        if (file.canWrite())
+        {
+            DocumentDownload documentDownload = DocumentDownload.getInstance();
+            try(InputStream inputStream = documentDownload.requestFile(serverType, authenticationToken, id);
+            FileOutputStream fos = new FileOutputStream(file);)
+            {
+                final byte[] buffer = new byte[BYTE_ARRAY_BUFFER_SIZE];
+                while (inputStream.read(buffer) > 0) {
+                    fos.write(buffer);
+                }
+            }
+            
+            catch(IOException | ParseException e)
+            {
+                throw new RequestException(e.getMessage(), e);
+            }   
+        }
+        else
+        {
+            throw new RequestException("Error writing file");
+        }    
+    }
     
     public void psreSign(InputStream inputStream, String filename, RequestSigner[] signers) throws RequestException, ParseException {
         try (final ByteArrayOutputStream bos = new ByteArrayOutputStream(BYTE_ARRAY_BUFFER_SIZE)) {
