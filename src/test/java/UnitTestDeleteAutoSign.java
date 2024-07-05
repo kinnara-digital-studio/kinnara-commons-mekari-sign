@@ -1,23 +1,17 @@
 import com.kinnarastudio.commons.mekarisign.MekariSign;
 import com.kinnarastudio.commons.mekarisign.exception.BuildingException;
 import com.kinnarastudio.commons.mekarisign.exception.RequestException;
-import com.kinnarastudio.commons.mekarisign.model.Annotation;
-import com.kinnarastudio.commons.mekarisign.model.AnnotationType;
-import com.kinnarastudio.commons.mekarisign.model.RequestSigner;
 import com.kinnarastudio.commons.mekarisign.model.ServerType;
 import org.junit.Test;
 
-import java.io.File;
 import java.io.IOException;
+
 import java.io.InputStream;
-import java.net.URL;
-import java.util.Optional;
 import java.util.Properties;
 
-public class UnitTestPSrE {
-
+public class UnitTestDeleteAutoSign {
     @Test
-    public void psreReqSign () throws RuntimeException {
+    public void reqDeleteAuto() throws RequestException {
         try (final InputStream is = getClass().getResourceAsStream("/properties/secret.properties")) {
             final Properties properties = new Properties() {{
                 load(is);
@@ -29,14 +23,7 @@ public class UnitTestPSrE {
             final String username = properties.getProperty("username");
             final String password = properties.getProperty("password");
 
-            final Annotation annotation = new Annotation(AnnotationType.SIGNATURE, 1, 25, 50, 10, 20, 100, 100);
-            final Annotation annotation2 = new Annotation(AnnotationType.SIGNATURE, 1, 50, 100, 10, 20, 100, 100);
-            final RequestSigner signer = new RequestSigner("Scooby Doo", username, new Annotation[]{annotation,annotation2});
-            final File file = Optional.ofNullable(getClass().getResource("/resources/testing_doc.pdf"))
-                    .map(URL::getFile)
-                    .map(File::new)
-                    .orElseThrow(() -> new IOException("Resource not found"));
-
+            final String id = "0641041a-bb38-4c1e-86cc-512012befadd";
             final MekariSign mekariSign = MekariSign.getBuilder()
                     .setClientId(clientId)
                     .setClientSecret(clientSecret)
@@ -44,9 +31,8 @@ public class UnitTestPSrE {
                     .setSecretCode(code)
                     .build();
 
-            mekariSign.psreSign(file, signer);
-
-        } catch (IOException | BuildingException | RequestException e) {
+            mekariSign.deleteAutoSign(id);
+        } catch (IOException | BuildingException e) {
             throw new RuntimeException(e);
         }
     }

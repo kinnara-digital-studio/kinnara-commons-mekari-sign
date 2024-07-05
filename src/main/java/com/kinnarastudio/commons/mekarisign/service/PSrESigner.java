@@ -20,6 +20,19 @@ import java.util.Base64;
 import java.util.stream.Collectors;
 
 public class PSrESigner {
+
+    private static PSrESigner instance = null;
+
+    private PSrESigner() {
+    }
+
+    public static PSrESigner getInstance() {
+        if (instance == null) {
+            instance = new PSrESigner();
+        }
+
+        return instance;
+    }
     public void requestSign(ServerType serverType, AuthenticationToken token, GlobalSignRequest globalSignRequest) throws RequestException {
         final RequestSigner[] signers = globalSignRequest.getSigners();
         final boolean signingOrder = globalSignRequest.isSigningOrder();
