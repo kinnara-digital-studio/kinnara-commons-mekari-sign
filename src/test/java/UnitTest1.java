@@ -75,8 +75,9 @@ public class UnitTest1 {
             //         .map(File::new)
             //         .orElseThrow(() -> new IOException("Resource not found"));
             
-            final File file = new File("D:/testing_doc2.pdf");
-            file.setWritable(true);
+            // final File file = new File("/home/natsuchi/Documents/testing_doc2.pdf");
+            File x = File.createTempFile("test", ".txt", new File("/home/user/Documents/"));
+            x.setWritable(true);
             final MekariSign mekariSign = MekariSign.getBuilder()
                     .setClientId(clientId)
                     .setClientSecret(clientSecret)
@@ -84,7 +85,7 @@ public class UnitTest1 {
                     .setSecretCode(code)
                     .build();
 
-            mekariSign.downloadDoc("01ec84e4-f8b4-449b-9429-ffff8c1a764b", file);
+            mekariSign.downloadDoc("01ec84e4-f8b4-449b-9429-ffff8c1a764b", x);
 
         } catch (IOException | BuildingException e) {
             throw new RuntimeException(e);
