@@ -18,6 +18,7 @@ import org.json.JSONObject;
 
 import com.kinnarastudio.commons.mekarisign.exception.RequestException;
 import com.kinnarastudio.commons.mekarisign.model.AuthenticationToken;
+import com.kinnarastudio.commons.mekarisign.model.DocumentCategory;
 import com.kinnarastudio.commons.mekarisign.model.DocumentListResponse;
 import com.kinnarastudio.commons.mekarisign.model.GetDocumentListBody;
 import com.kinnarastudio.commons.mekarisign.model.ResponseData;
@@ -42,7 +43,7 @@ public class DocumentListGetter {
         return instance;
     }
 
-    public GetDocumentListBody requestDocs(ServerType serverType, AuthenticationToken token, int page, int limit, SigningStatus status, StampingStatus stamping) throws RequestException, ParseException
+    public GetDocumentListBody requestDocs(ServerType serverType, AuthenticationToken token, int page, int limit, DocumentCategory category, SigningStatus status, StampingStatus stamping) throws RequestException, ParseException
     {
         try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) 
         {
@@ -51,6 +52,11 @@ public class DocumentListGetter {
             String urlGlobal = baseUrl + "/v2/esign/v1/documents?page="+ page +"&limit="+ limit;
 
             System.out.println("Status: " + status);
+            if (category != null)
+            {
+                urlGlobal += "&category="+ category;
+            }
+
             if (status != null)
             {
                 urlGlobal += "&signing_status="+ status;

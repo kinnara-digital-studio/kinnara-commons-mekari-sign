@@ -74,7 +74,7 @@ public class UnitTest1 {
                     .setSecretCode(code)
                     .build();
 
-            mekariSign.getDoc(1, 8, SigningStatus.COMPLETED, null);;
+            mekariSign.getDoc(1, 8, DocumentCategory.PSRE, null, null);;
 
         } catch (IOException e) {
             throw new RuntimeException(e);

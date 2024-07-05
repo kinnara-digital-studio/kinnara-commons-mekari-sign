@@ -14,6 +14,8 @@ import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Base64;
 
+import javax.swing.text.Document;
+
 public class MekariSign {
     public final static int BYTE_ARRAY_BUFFER_SIZE = 4096;
 
@@ -76,10 +78,10 @@ public class MekariSign {
         }
     }
 
-    public void getDoc(int page, int limit, SigningStatus status, StampingStatus stamping) throws RequestException, ParseException
+    public void getDoc(int page, int limit,DocumentCategory category ,SigningStatus status, StampingStatus stamping) throws RequestException, ParseException
     {
         DocumentListGetter docListGet = DocumentListGetter.getInstance();
-        docListGet.requestDocs(serverType, authenticationToken, page, limit, status, stamping);
+        docListGet.requestDocs(serverType, authenticationToken, page, limit,category, status, stamping);
     }
 
     public void getProfile() throws RequestException, ParseException

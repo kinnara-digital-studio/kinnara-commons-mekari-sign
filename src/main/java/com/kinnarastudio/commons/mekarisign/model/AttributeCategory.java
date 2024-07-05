@@ -10,7 +10,7 @@ public enum AttributeCategory {
         switch (value) {
             case "global":
                 return GLOBAL;
-            case "prse":
+            case "psre":
                 return PSRE;
             default:
                 throw new ParseException("Error [" + AttributeCategory.class.getName() + "] parsing [" + value + "]", 0);
