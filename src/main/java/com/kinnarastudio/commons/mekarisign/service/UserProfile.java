@@ -1,9 +1,6 @@
 package com.kinnarastudio.commons.mekarisign.service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.stream.Collectors;
@@ -24,7 +21,7 @@ import com.kinnarastudio.commons.mekarisign.model.UserProfileModel;
 
 public class UserProfile {
     private static UserProfile instance = null;
-    
+
     private UserProfile() {
     }
 
@@ -36,10 +33,8 @@ public class UserProfile {
         return instance;
     }
 
-    public ProfileData requestProfile(ServerType serverType, AuthenticationToken token) throws RequestException, ParseException
-    {
-        try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) 
-        {
+    public ProfileData requestProfile(ServerType serverType, AuthenticationToken token) throws RequestException, ParseException {
+        try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
 
             final URL baseUrl = serverType.getBaseUrl();
             final String urlGlobal = baseUrl + "/v2/esign/v1/profile";
@@ -52,8 +47,8 @@ public class UserProfile {
 
             final HttpResponse response = httpClient.execute(get);
 
-            try (final Reader reader = new InputStreamReader(response.getEntity().getContent());
-                 final BufferedReader bufferedReader = new BufferedReader(reader)) {
+            try (final InputStream is = response.getEntity().getContent();
+                 final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is))) {
 
                 final String responsePayload = bufferedReader.lines().collect(Collectors.joining());
 
@@ -67,7 +62,7 @@ public class UserProfile {
                 return userProfileResponse.getData();
             }
         } catch (IOException | JSONException e) {
-            throw new RequestException("Error authenticating : " + e.getMessage(), e);
+            throw new RequestException(e);
         }
     }
 }

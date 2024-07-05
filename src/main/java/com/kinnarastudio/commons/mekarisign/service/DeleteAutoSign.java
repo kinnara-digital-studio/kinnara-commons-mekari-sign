@@ -11,10 +11,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -53,8 +50,8 @@ public class DeleteAutoSign {
 
             final HttpResponse response = httpClient.execute(delete);
 
-            try (final Reader reader = new InputStreamReader(response.getEntity().getContent());
-                 final BufferedReader bufferedReader = new BufferedReader(reader)) {
+            try (final InputStream is = response.getEntity().getContent();
+                 final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is))) {
 
                 final String responsePayload = bufferedReader.lines().collect(Collectors.joining());
 

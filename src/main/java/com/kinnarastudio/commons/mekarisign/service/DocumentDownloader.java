@@ -1,46 +1,36 @@
 package com.kinnarastudio.commons.mekarisign.service;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.URL;
-import java.text.ParseException;
-import java.util.stream.Collectors;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.kinnarastudio.commons.mekarisign.exception.RequestException;
 import com.kinnarastudio.commons.mekarisign.model.AuthenticationToken;
-import com.kinnarastudio.commons.mekarisign.model.GlobalSignResponse;
 import com.kinnarastudio.commons.mekarisign.model.ServerType;
-import com.kinnarastudio.commons.mekarisign.model.SignResponseAttributes;
 import com.kinnarastudio.commons.mekarisign.model.TokenType;
 
-public class DocumentDownload {
-    private static DocumentDownload instance = null;
-    
-    private DocumentDownload() {
+public class DocumentDownloader {
+    private static DocumentDownloader instance = null;
+
+    private DocumentDownloader() {
     }
 
-    public static DocumentDownload getInstance() {
+    public static DocumentDownloader getInstance() {
         if (instance == null) {
-            instance = new DocumentDownload();
+            instance = new DocumentDownloader();
         }
 
         return instance;
     }
 
-    public InputStream requestFile(ServerType serverType, AuthenticationToken token, String id) throws RequestException, ParseException
-    {
-        try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) 
-        {
+    public InputStream downloadFile(ServerType serverType, AuthenticationToken token, String id) throws RequestException {
+        try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
 
             final URL baseUrl = serverType.getBaseUrl();
             String urlGlobal = baseUrl + "/v2/esign/v1/documents/" + id + "/download";
@@ -54,7 +44,7 @@ public class DocumentDownload {
             final HttpResponse response = httpClient.execute(get);
 
             return response.getEntity().getContent();
-            
+
         } catch (IOException | JSONException e) {
             throw new RequestException(e.getMessage(), e);
         }

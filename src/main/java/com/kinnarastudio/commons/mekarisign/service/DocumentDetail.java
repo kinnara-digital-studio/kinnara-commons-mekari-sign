@@ -1,9 +1,6 @@
 package com.kinnarastudio.commons.mekarisign.service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.stream.Collectors;
@@ -24,7 +21,7 @@ import com.kinnarastudio.commons.mekarisign.model.TokenType;
 
 public class DocumentDetail {
     private static DocumentDetail instance = null;
-    
+
     private DocumentDetail() {
     }
 
@@ -36,10 +33,8 @@ public class DocumentDetail {
         return instance;
     }
 
-    public SignResponseAttributes requestDocs(ServerType serverType, AuthenticationToken token, String id) throws RequestException, ParseException
-    {
-        try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) 
-        {
+    public SignResponseAttributes requestDocs(ServerType serverType, AuthenticationToken token, String id) throws RequestException, ParseException {
+        try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
 
             final URL baseUrl = serverType.getBaseUrl();
             String urlGlobal = baseUrl + "/v2/esign/v1/documents/" + id;
@@ -52,8 +47,8 @@ public class DocumentDetail {
 
             final HttpResponse response = httpClient.execute(get);
 
-            try (final Reader reader = new InputStreamReader(response.getEntity().getContent());
-                 final BufferedReader bufferedReader = new BufferedReader(reader)) {
+            try (final InputStream is = response.getEntity().getContent();
+                 final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is))) {
 
                 final String responsePayload = bufferedReader.lines().collect(Collectors.joining());
 

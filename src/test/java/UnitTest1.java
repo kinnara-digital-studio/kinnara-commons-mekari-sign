@@ -4,10 +4,9 @@ import com.kinnarastudio.commons.mekarisign.exception.RequestException;
 import com.kinnarastudio.commons.mekarisign.model.*;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.Optional;
@@ -74,10 +73,10 @@ public class UnitTest1 {
             //         .map(URL::getFile)
             //         .map(File::new)
             //         .orElseThrow(() -> new IOException("Resource not found"));
-            
+
             // final File file = new File("/home/natsuchi/Documents/testing_doc2.pdf");
-            File x = File.createTempFile("test", ".txt", new File("/home/user/Documents/"));
-            x.setWritable(true);
+            File file = File.createTempFile("test", ".txt", new File("/home/user/Documents/"));
+            file.setWritable(true);
             final MekariSign mekariSign = MekariSign.getBuilder()
                     .setClientId(clientId)
                     .setClientSecret(clientSecret)
@@ -85,11 +84,23 @@ public class UnitTest1 {
                     .setSecretCode(code)
                     .build();
 
-            mekariSign.downloadDoc("01ec84e4-f8b4-449b-9429-ffff8c1a764b", x);
+            mekariSign.downloadDoc("01ec84e4-f8b4-449b-9429-ffff8c1a764b", file);
 
         } catch (IOException | BuildingException e) {
             throw new RuntimeException(e);
         }
+
+//        try(InputStream is = getClass().getResourceAsStream("/resources/testing_doc1.pdf");
+//            FileOutputStream fos = new FileOutputStream(File.createTempFile("testing_doc1", ".pdf", new File("/home/aristo/Developments/Java/kinnara-commons-mekari-sign/src/test/resources/resources/")))) {
+//
+//            byte[] buffer = new byte[4096];
+//            int len;
+//            while((len = is.read(buffer)) > 0) {
+//                fos.write(buffer, 0, len);
+//            }
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 
     @Test
