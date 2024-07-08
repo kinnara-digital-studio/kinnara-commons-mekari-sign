@@ -10,8 +10,6 @@ import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Base64;
 
-import javax.swing.text.Document;
-
 public class MekariSign {
     public final static int BYTE_ARRAY_BUFFER_SIZE = 4096;
 
@@ -50,7 +48,7 @@ public class MekariSign {
 
             final String doc = encoder.encodeToString(bos.toByteArray());
             final GlobalSigner globalSigner = GlobalSigner.getInstance();
-            globalSigner.requestSign(serverType, authenticationToken, new GlobalSignRequest(filename, doc, signers));
+            globalSigner.requestSign(serverType, authenticationToken, new SignRequest(filename, doc, signers));
         } catch (IOException e) {
             throw new RequestException(e.getMessage(), e);
         }
@@ -105,7 +103,7 @@ public class MekariSign {
 
             final String doc = encoder.encodeToString(bos.toByteArray());
             final PSrESigner psre = PSrESigner.getInstance();
-            psre.requestSign(serverType, authenticationToken, new GlobalSignRequest(filename, doc, signers));
+            psre.requestSign(serverType, authenticationToken, new SignRequest(filename, doc, signers));
         } catch (IOException e) {
             throw new RequestException(e.getMessage(), e);
         }

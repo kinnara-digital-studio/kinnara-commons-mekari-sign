@@ -4,14 +4,14 @@ import org.json.JSONObject;
 
 import java.text.ParseException;
 
-public class GlobalSignResponse {
+public class SignResponse {
     private final ResponseData data;
 
-    public GlobalSignResponse(JSONObject fromJson) throws ParseException {
+    public SignResponse(JSONObject fromJson) throws ParseException {
         data = new ResponseData(fromJson.getJSONObject("data"));
     }
 
-    public GlobalSignResponse(ResponseData data){
+    public SignResponse(ResponseData data){
         this.data = data;
     }
 

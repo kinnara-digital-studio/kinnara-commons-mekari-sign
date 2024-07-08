@@ -31,7 +31,7 @@ public class GlobalSigner {
         return instance;
     }
 
-    public SignResponseAttributes requestSign(ServerType serverType, AuthenticationToken token, GlobalSignRequest signRequest) throws RequestException {
+    public SignResponseAttributes requestSign(ServerType serverType, AuthenticationToken token, SignRequest signRequest) throws RequestException {
         try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
 
             final URL baseUrl = serverType.getBaseUrl();
@@ -60,8 +60,8 @@ public class GlobalSigner {
                 }
 
                 final JSONObject jsonResponsePayload = new JSONObject(responsePayload);
-                final GlobalSignResponse globalSignResponse = new GlobalSignResponse(jsonResponsePayload);
-                return globalSignResponse.getData().getAttributes();
+                final SignResponse signResponse = new SignResponse(jsonResponsePayload);
+                return signResponse.getData().getAttributes();
             }
         } catch (IOException | JSONException | ParseException e) {
             throw new RequestException("Error authenticating : " + e.getMessage(), e);
