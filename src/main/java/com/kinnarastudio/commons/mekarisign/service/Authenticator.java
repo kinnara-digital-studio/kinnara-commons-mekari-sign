@@ -14,10 +14,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.stream.Collectors;
@@ -50,8 +47,8 @@ public class Authenticator {
 //                throw new RequestException("HTTP response code [" + statusCode + "]");
 //            }
 //
-//            try (Reader reader = new InputStreamReader(response.getEntity().getContent());
-//                 BufferedReader bufferedReader = new BufferedReader(reader)) {
+//            try (InputStream is = response.getEntity().getContent();
+//                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is))) {
 //
 //                final JSONObject jsonResponsePayload = new JSONObject(bufferedReader.lines().collect(Collectors.joining()));
 //                final String code = jsonResponsePayload.getString("code");
@@ -74,8 +71,8 @@ public class Authenticator {
 
             final HttpResponse response = client.execute(request);
 
-            try (final Reader reader = new InputStreamReader(response.getEntity().getContent());
-                 final BufferedReader bufferedReader = new BufferedReader(reader)) {
+            try (final InputStream is = response.getEntity().getContent();
+                 final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is))) {
 
                 final String responsePayload = bufferedReader.lines().collect(Collectors.joining());
                 final int statusCode = response.getStatusLine().getStatusCode();

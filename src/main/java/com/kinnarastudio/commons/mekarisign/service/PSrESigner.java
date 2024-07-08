@@ -54,9 +54,8 @@ public class PSrESigner {
 
             final HttpResponse response = httpClient.execute(post);
 
-            // Mengirim permintaan POST dan menerima response
-            try (final Reader reader = new InputStreamReader(response.getEntity().getContent());
-                 final BufferedReader bufferedReader = new BufferedReader(reader)) {
+            try (final InputStream is = response.getEntity().getContent();
+                 final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is))) {
 
                 final String responsePayload = bufferedReader.lines().collect(Collectors.joining());
 
