@@ -34,7 +34,7 @@ public class DocumentDownloader {
     public void downloadFile(ServerType serverType, AuthenticationToken token, String id, OutputStream outputStream) throws RequestException {
         try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
 
-            final URL baseUrl = serverType.getBaseUrl();
+            final URL baseUrl = serverType.getApiBaseUrl();
             String urlGlobal = baseUrl + "/v2/esign/v1/documents/" + id + "/download";
 
             final HttpGet get = new HttpGet(urlGlobal) {{
@@ -54,7 +54,7 @@ public class DocumentDownloader {
             }
             
         } catch (IOException | JSONException e) {
-            throw new RequestException(e.getMessage(), e);
+            throw new RequestException(e);
         }
     }
 }

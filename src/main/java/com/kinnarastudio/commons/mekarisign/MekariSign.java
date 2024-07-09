@@ -38,12 +38,12 @@ public class MekariSign {
     }
 
     public void globalSign(InputStream inputStream, String filename, RequestSigner[] signers) throws RequestException {
-        try (final ByteArrayOutputStream bos = new ByteArrayOutputStream(BYTE_ARRAY_BUFFER_SIZE)) {
+        try (final ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
 
             final Base64.Encoder encoder = Base64.getEncoder();
             final byte[] buffer = new byte[BYTE_ARRAY_BUFFER_SIZE];
             int len;
-            while ((len = inputStream.read(buffer)) > 0) {
+            while ((len = inputStream.read(buffer)) >= 0) {
                 bos.write(buffer, 0, len);
             }
 
@@ -82,12 +82,12 @@ public class MekariSign {
     }
 
     public void getProfile() throws RequestException, ParseException {
-        UserProfile userProfile = UserProfile.getInstance();
-        userProfile.requestProfile(serverType, authenticationToken);
+        UserProfileService userProfileService = UserProfileService.getInstance();
+        userProfileService.requestProfile(serverType, authenticationToken);
     }
 
     public void getDocDetail(String id) throws RequestException, ParseException {
-        DocumentDetail docListDetail = DocumentDetail.getInstance();
+        DocumentDetailService docListDetail = DocumentDetailService.getInstance();
         docListDetail.requestDocs(serverType, authenticationToken, id);
     }
 
@@ -115,12 +115,12 @@ public class MekariSign {
     }
 
     public void psreSign(InputStream inputStream, String filename, RequestSigner[] signers) throws RequestException, ParseException {
-        try (final ByteArrayOutputStream bos = new ByteArrayOutputStream(BYTE_ARRAY_BUFFER_SIZE)) {
+        try (final ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
 
             final Base64.Encoder encoder = Base64.getEncoder();
             final byte[] buffer = new byte[BYTE_ARRAY_BUFFER_SIZE];
             int len;
-            while ((len = inputStream.read(buffer)) > 0) {
+            while ((len = inputStream.read(buffer)) >= 0) {
                 bos.write(buffer, 0, len);
             }
 
@@ -135,9 +135,9 @@ public class MekariSign {
     }
 
     public void autoSign(ReqAutoSign reqAutoSign) throws RequestException {
-        final AutoSign autoSign = AutoSign.getInstance();
+        final AutoSignService autoSignService = AutoSignService.getInstance();
         try {
-            autoSign.requestAutoSign(serverType, authenticationToken, reqAutoSign);
+            autoSignService.requestAutoSign(serverType, authenticationToken, reqAutoSign);
         } catch (IOException e) {
             throw new RequestException(e);
         }

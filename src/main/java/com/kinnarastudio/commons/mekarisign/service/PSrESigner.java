@@ -44,7 +44,7 @@ public class PSrESigner {
             // Menentukan URL server
             final JSONObject requestJson = signRequest.toJson();
             final HttpEntity httpEntity = new StringEntity(requestJson.toString(), ContentType.APPLICATION_JSON);
-            final URL baseUrl = serverType.getBaseUrl();
+            final URL baseUrl = serverType.getApiBaseUrl();
             final String urlGlobal =  baseUrl + "/v2/esign/v1/documents/request_psre_sign";
 
             final HttpPost post = new HttpPost(urlGlobal) {{
@@ -76,7 +76,7 @@ public class PSrESigner {
             // }
 
         } catch (IOException | JSONException e) {
-            throw new RequestException(e.getMessage(), e);
+            throw new RequestException(e);
         }
     }
 }
