@@ -27,7 +27,7 @@ public class UnitTestPSrE {
             final String clientId = properties.getProperty("clientId");
             final String clientSecret = properties.getProperty("clientSecret");
             final String code = properties.getProperty("secretCode");
-            final String username = properties.getProperty("username");
+            final String username = "signer2@yopmail.com";
             final String password = properties.getProperty("password");
 
             final Annotation annotation = new Annotation(AnnotationType.SIGNATURE, 1, 25, 50, 10, 20, 100, 100);

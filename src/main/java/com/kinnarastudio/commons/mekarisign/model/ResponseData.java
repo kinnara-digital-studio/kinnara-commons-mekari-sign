@@ -8,6 +8,7 @@ public class ResponseData {
     private final SignResponseAttributes attributes;
 
     public ResponseData(JSONObject fromJson) throws ParseException {
+
         attributes = new SignResponseAttributes(fromJson.getJSONObject("attributes"));
     }
 
@@ -18,4 +19,5 @@ public class ResponseData {
     public SignResponseAttributes getAttributes() {
         return attributes;
     }
+
 }
