@@ -1,6 +1,5 @@
 package com.kinnarastudio.commons.mekarisign.service;
 
-import com.kinnarastudio.commons.mekarisign.exception.AuthenticationException;
 import com.kinnarastudio.commons.mekarisign.exception.RequestException;
 import com.kinnarastudio.commons.mekarisign.model.*;
 import org.apache.http.HttpEntity;
@@ -10,14 +9,12 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
 import java.net.URL;
 import java.text.ParseException;
-import java.util.Base64;
 import java.util.stream.Collectors;
 
 public class PSrESigner {
@@ -34,10 +31,10 @@ public class PSrESigner {
 
         return instance;
     }
-    public SignResponseAttributes requestSign(ServerType serverType, AuthenticationToken token, GlobalSignRequest globalSignRequest) throws RequestException, ParseException {
-        final RequestSigner[] signers = globalSignRequest.getSigners();
-        final boolean signingOrder = globalSignRequest.isSigningOrder();
-        final String callbackUrl = globalSignRequest.getCallbackUrl();
+    public SignResponseAttributes requestSign(ServerType serverType, AuthenticationToken token, SignRequest signRequest) throws RequestException, ParseException {
+        final RequestSigner[] signers = signRequest.getSigners();
+        final boolean signingOrder = signRequest.isSigningOrder();
+        final String callbackUrl = signRequest.getCallbackUrl();
 
         try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
             // TODO: connect to Mekari Sign server
@@ -45,7 +42,7 @@ public class PSrESigner {
             //Membuat JSON payload untuk permintaan POST
 
             // Menentukan URL server
-            final JSONObject requestJson = globalSignRequest.toJson();
+            final JSONObject requestJson = signRequest.toJson();
             final HttpEntity httpEntity = new StringEntity(requestJson.toString(), ContentType.APPLICATION_JSON);
             final URL baseUrl = serverType.getBaseUrl();
             final String urlGlobal =  baseUrl + "/v2/esign/v1/documents/request_psre_sign";
@@ -68,8 +65,8 @@ public class PSrESigner {
                 }
 
                 final JSONObject jsonResponsePayload = new JSONObject(responsePayload);
-                final GlobalSignResponse globalSignResponse = new GlobalSignResponse(jsonResponsePayload);
-                return globalSignResponse.getData().getAttributes();
+                final SignResponse signResponse = new SignResponse(jsonResponsePayload);
+                return signResponse.getData().getAttributes();
             }
 
             // final int statusCode = response.getStatusLine().getStatusCode();

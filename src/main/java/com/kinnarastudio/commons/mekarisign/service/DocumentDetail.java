@@ -14,7 +14,7 @@ import org.json.JSONObject;
 
 import com.kinnarastudio.commons.mekarisign.exception.RequestException;
 import com.kinnarastudio.commons.mekarisign.model.AuthenticationToken;
-import com.kinnarastudio.commons.mekarisign.model.GlobalSignResponse;
+import com.kinnarastudio.commons.mekarisign.model.SignResponse;
 import com.kinnarastudio.commons.mekarisign.model.ServerType;
 import com.kinnarastudio.commons.mekarisign.model.SignResponseAttributes;
 import com.kinnarastudio.commons.mekarisign.model.TokenType;
@@ -58,8 +58,8 @@ public class DocumentDetail {
                 }
 
                 final JSONObject jsonRespArray = new JSONObject(responsePayload);
-                final GlobalSignResponse globalSignResponse = new GlobalSignResponse(jsonRespArray);
-                return globalSignResponse.getData().getAttributes();
+                final SignResponse signResponse = new SignResponse(jsonRespArray);
+                return signResponse.getData().getAttributes();
             }
         } catch (IOException | JSONException e) {
             throw new RequestException("Error authenticating : " + e.getMessage(), e);

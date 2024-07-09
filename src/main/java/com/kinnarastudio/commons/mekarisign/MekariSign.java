@@ -49,7 +49,8 @@ public class MekariSign {
 
             final String doc = encoder.encodeToString(bos.toByteArray());
             final GlobalSigner globalSigner = GlobalSigner.getInstance();
-            globalSigner.requestSign(serverType, authenticationToken, new GlobalSignRequest(filename, doc, signers));
+
+            globalSigner.requestSign(serverType, authenticationToken, new SignRequest(filename, doc, signers));
 
         } catch (IOException e) {
             throw new RequestException(e);
@@ -125,7 +126,8 @@ public class MekariSign {
 
             final String doc = encoder.encodeToString(bos.toByteArray());
             final PSrESigner psre = PSrESigner.getInstance();
-            psre.requestSign(serverType, authenticationToken, new GlobalSignRequest(filename, doc, signers));
+
+            psre.requestSign(serverType, authenticationToken, new SignRequest(filename, doc, signers));
 
         } catch (IOException e) {
             throw new RequestException(e);
