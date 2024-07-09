@@ -1,84 +1,171 @@
 package com.kinnarastudio.commons.mekarisign;
 
-import com.kinnarastudio.commons.mekarisign.exception.BuildingException;
 import com.kinnarastudio.commons.mekarisign.exception.RequestException;
-import com.kinnarastudio.commons.mekarisign.model.Authentication;
-import com.kinnarastudio.commons.mekarisign.model.AuthenticationToken;
-import com.kinnarastudio.commons.mekarisign.model.GrantType;
-import com.kinnarastudio.commons.mekarisign.model.ServerType;
-import com.kinnarastudio.commons.mekarisign.service.Authenticator;
+import com.kinnarastudio.commons.mekarisign.model.*;
+import com.kinnarastudio.commons.mekarisign.service.*;
 
-import java.io.File;
+import java.io.*;
+import java.nio.file.Files;
+import java.text.ParseException;
+import java.util.Base64;
 
 public class MekariSign {
+    public final static int BYTE_ARRAY_BUFFER_SIZE = 4096;
+
     private final ServerType serverType;
     private final AuthenticationToken authenticationToken;
 
-    private MekariSign(ServerType serverType, AuthenticationToken authenticationToken) {
+    public MekariSign(ServerType serverType, AuthenticationToken authenticationToken) {
         this.serverType = serverType;
         this.authenticationToken = authenticationToken;
     }
 
-    public void globalSign(File file) {
-
+    public void globalSign(File file, RequestSigner signer) throws RequestException {
+        globalSign(file, new RequestSigner[]{signer});
     }
 
-    public void digistamp(File file) {
-
+    public void globalSign(InputStream inputStream, String filename, RequestSigner signer) throws RequestException {
+        globalSign(inputStream, filename, new RequestSigner[]{signer});
     }
 
-    public final static class Builder {
-
-        private String clientId;
-
-        private String clientSecret;
-
-        private String code;
-
-        private ServerType serverType = ServerType.PRODUCTION;
-
-        private Builder() {
+    public void globalSign(File file, RequestSigner[] signers) throws RequestException {
+        try (final InputStream is = Files.newInputStream(file.toPath())) {
+            final String filename = file.getName();
+            globalSign(is, filename, signers);
+        } catch (IOException e) {
+            throw new RequestException(e);
         }
+    }
 
-        public static MekariSign.Builder getInstance() {
-            return new MekariSign.Builder();
-        }
+    public void globalSign(InputStream inputStream, String filename, RequestSigner[] signers) throws RequestException {
+        try (final ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
 
-        public MekariSign.Builder setClientId(String clientId) {
-            this.clientId = clientId;
-            return this;
-        }
-
-        public MekariSign.Builder setClientSecret(String clientSecret) {
-            this.clientSecret = clientSecret;
-            return this;
-        }
-
-        public MekariSign.Builder setServerType(ServerType serverType) {
-            this.serverType = serverType;
-            return this;
-        }
-
-        /**
-         * Call <a href="https://documenter.getpostman.com/view/21582074/2s93K1oecc#authentication">authentication</a> request and keep token
-         *
-         * @return
-         */
-        public MekariSign buildAndAuthenticate() throws BuildingException {
-            try {
-                final Authenticator authenticator = Authenticator.getInstance();
-                final Authentication authentication = new Authentication(clientId, clientSecret, GrantType.AUTHORIZATION_CODE, code);
-                final AuthenticationToken token = authenticator.authenticate(serverType, authentication);
-
-                return new MekariSign(serverType, token);
-            } catch (RequestException e) {
-                throw new BuildingException(e);
+            final Base64.Encoder encoder = Base64.getEncoder();
+            final byte[] buffer = new byte[BYTE_ARRAY_BUFFER_SIZE];
+            int len;
+            while ((len = inputStream.read(buffer)) >= 0) {
+                bos.write(buffer, 0, len);
             }
+
+            final String doc = encoder.encodeToString(bos.toByteArray());
+            final GlobalSigner globalSigner = GlobalSigner.getInstance();
+
+            globalSigner.requestSign(serverType, authenticationToken, new SignRequest(filename, doc, signers));
+
+        } catch (IOException e) {
+            throw new RequestException(e);
+        }
+    }
+
+    public void psreSign(File file, RequestSigner reqSigner) throws RequestException, ParseException {
+        psreSign(file, new RequestSigner[]{reqSigner});
+    }
+
+    public void psreSign(InputStream inputStream, String filename, RequestSigner signer) throws RequestException, ParseException {
+        psreSign(inputStream, filename, new RequestSigner[]{signer});
+    }
+
+    public void psreSign(File file, RequestSigner[] signers) throws RequestException, ParseException {
+        try (final InputStream is = Files.newInputStream(file.toPath())) {
+
+            final String filename = file.getName();
+            psreSign(is, filename, signers);
+
+        } catch (IOException e) {
+            throw new RequestException(e);
+        }
+    }
+
+    public void getDoc(int page, int limit, DocumentCategory category, SigningStatus status, StampingStatus stamping) throws RequestException, ParseException {
+        DocumentListService docListGet = DocumentListService.getInstance();
+        docListGet.requestDocs(serverType, authenticationToken, page, limit, category, status, stamping);
+    }
+
+    public void getProfile() throws RequestException, ParseException {
+        UserProfileService userProfileService = UserProfileService.getInstance();
+        userProfileService.requestProfile(serverType, authenticationToken);
+    }
+
+    public void getDocDetail(String id) throws RequestException, ParseException {
+        DocumentDetailService docListDetail = DocumentDetailService.getInstance();
+        docListDetail.requestDocs(serverType, authenticationToken, id);
+    }
+
+    public void downloadDoc(String id, File fileOutput) throws RequestException {
+        if (fileOutput == null || !fileOutput.canWrite()) {
+            throw new RequestException("Error writing file");
         }
 
-        public Builder setCode(String code) {
-            this.code = code;
-            return this;
+        try (final OutputStream os = Files.newOutputStream(fileOutput.toPath())) {
+
+            downloadDoc(id, os);
+
+        } catch (IOException e) {
+            throw new RequestException(e);
         }
+    }
+
+    public void downloadDoc(String id, OutputStream outputStream) throws RequestException {
+        if (outputStream == null) {
+            throw new RequestException("Error writing output");
+        }
+
+        DocumentDownloader documentDownloader = DocumentDownloader.getInstance();
+        documentDownloader.downloadFile(serverType, authenticationToken, id, outputStream);
+    }
+
+    public void psreSign(InputStream inputStream, String filename, RequestSigner[] signers) throws RequestException, ParseException {
+        try (final ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+
+            final Base64.Encoder encoder = Base64.getEncoder();
+            final byte[] buffer = new byte[BYTE_ARRAY_BUFFER_SIZE];
+            int len;
+            while ((len = inputStream.read(buffer)) >= 0) {
+                bos.write(buffer, 0, len);
+            }
+
+            final String doc = encoder.encodeToString(bos.toByteArray());
+            final PSrESigner psre = PSrESigner.getInstance();
+
+            psre.requestSign(serverType, authenticationToken, new SignRequest(filename, doc, signers));
+
+        } catch (IOException e) {
+            throw new RequestException(e);
+        }
+    }
+
+    public void autoSign(ReqAutoSign reqAutoSign) throws RequestException {
+        final AutoSignService autoSignService = AutoSignService.getInstance();
+        try {
+            autoSignService.requestAutoSign(serverType, authenticationToken, reqAutoSign);
+        } catch (IOException e) {
+            throw new RequestException(e);
+        }
+    }
+
+    public void deleteAutoSign(String autoSignId) throws RequestException {
+        final DeleteAutoSign delete = DeleteAutoSign.getInstance();
+        try {
+            delete.deleteAutoSign(serverType, authenticationToken, autoSignId);
+        } catch (IOException e) {
+            throw new RequestException(e);
+        }
+    }
+
+    public void reqEKYC(ReqKYC requestEKYC) throws RequestException{
+        final KYC request = KYC.getInstance();
+        try {
+            request.requestKYC(serverType, authenticationToken, requestEKYC);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void digitalStamp(File file) {
+
+    }
+
+    public static Builder getBuilder() {
+        return new Builder();
     }
 }

@@ -12,31 +12,32 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.stream.Collectors;
 
-public class GlobalSigner {
-    private static GlobalSigner instance = null;
+public class KYC {
+    private static KYC instance = null;
 
-    private GlobalSigner() {
+    private KYC() {
     }
 
-    public static GlobalSigner getInstance() {
-        if (instance == null) {
-            instance = new GlobalSigner();
+    public static KYC getInstance() {
+        if(instance == null) {
+            instance = new KYC();
         }
-
         return instance;
     }
 
-    public SignResponseAttributes requestSign(ServerType serverType, AuthenticationToken token, SignRequest signRequest) throws RequestException {
+    public RespAttributesKYC requestKYC(ServerType serverType, AuthenticationToken token, ReqKYC reqKYC) throws IOException, RequestException {
         try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
-
             final URL baseUrl = serverType.getApiBaseUrl();
-            final String urlGlobal = String.format("%s/v%d/esign/v%d/documents/request_global_sign", baseUrl, serverType.getApiVersion(), serverType.getEsignVersion());
-            final JSONObject requestJson = signRequest.toJson();
+            final String urlGlobal = String.format("%s/v%d/esign/v%d/ekyc_request", baseUrl, serverType.getApiVersion(), serverType.getEsignVersion());
+            final JSONObject requestJson = reqKYC.toJson();
 
             final HttpPost post = new HttpPost(urlGlobal) {{
                 if (token.getTokenType() == TokenType.BEARER) {
@@ -46,7 +47,6 @@ public class GlobalSigner {
                 final HttpEntity httpEntity = new StringEntity(requestJson.toString(), ContentType.APPLICATION_JSON);
                 setEntity(httpEntity);
             }};
-
             final HttpResponse response = httpClient.execute(post);
 
             try (final InputStream is = response.getEntity().getContent();
@@ -60,11 +60,11 @@ public class GlobalSigner {
                 }
 
                 final JSONObject jsonResponsePayload = new JSONObject(responsePayload);
-                final SignResponse signResponse = new SignResponse(jsonResponsePayload);
-                return signResponse.getData().getAttributes();
+                final RespKYC respKYC = new RespKYC(jsonResponsePayload);
+                return respKYC.getDataKYC().getAttributesKYC();
             }
         } catch (IOException | JSONException | ParseException e) {
-            throw new RequestException(e);
+            throw new RequestException("Error authenticating : " + e.getMessage(), e);
         }
     }
 }

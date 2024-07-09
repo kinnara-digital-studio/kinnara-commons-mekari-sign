@@ -9,7 +9,6 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -17,29 +16,29 @@ import java.net.URL;
 import java.text.ParseException;
 import java.util.stream.Collectors;
 
-public class GlobalSigner {
-    private static GlobalSigner instance = null;
+public class AutoSignService {
+    private static AutoSignService instance = null;
 
-    private GlobalSigner() {
+    private AutoSignService() {
+
     }
 
-    public static GlobalSigner getInstance() {
+    public static AutoSignService getInstance() {
         if (instance == null) {
-            instance = new GlobalSigner();
+            instance = new AutoSignService();
         }
-
         return instance;
     }
 
-    public SignResponseAttributes requestSign(ServerType serverType, AuthenticationToken token, SignRequest signRequest) throws RequestException {
+    public RespDataAutoSign[] requestAutoSign(ServerType serverType, AuthenticationToken token, ReqAutoSign reqAutoSign) throws RequestException, IOException {
+
         try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
-
             final URL baseUrl = serverType.getApiBaseUrl();
-            final String urlGlobal = String.format("%s/v%d/esign/v%d/documents/request_global_sign", baseUrl, serverType.getApiVersion(), serverType.getEsignVersion());
-            final JSONObject requestJson = signRequest.toJson();
+            final String urlAuto = String.format("%s/v%d/esign/v%d/auto_sign", baseUrl, serverType.getApiVersion(), serverType.getEsignVersion());
+            final JSONObject requestJson = reqAutoSign.toJson();
 
-            final HttpPost post = new HttpPost(urlGlobal) {{
-                if (token.getTokenType() == TokenType.BEARER) {
+            final HttpPost post = new HttpPost(urlAuto) {{
+                if(token.getTokenType() == TokenType.BEARER) {
                     addHeader("Authorization", "Bearer " + token.getAccessToken());
                 }
 
@@ -60,10 +59,11 @@ public class GlobalSigner {
                 }
 
                 final JSONObject jsonResponsePayload = new JSONObject(responsePayload);
-                final SignResponse signResponse = new SignResponse(jsonResponsePayload);
-                return signResponse.getData().getAttributes();
+                final AutoSignResponse autoResponse = new AutoSignResponse(jsonResponsePayload);
+                return autoResponse.getRespData();
+
             }
-        } catch (IOException | JSONException | ParseException e) {
+        } catch (IOException | ParseException e) {
             throw new RequestException(e);
         }
     }

@@ -17,33 +17,38 @@ import java.net.URL;
 import java.text.ParseException;
 import java.util.stream.Collectors;
 
-public class GlobalSigner {
-    private static GlobalSigner instance = null;
+public class PSrESigner {
 
-    private GlobalSigner() {
+    private static PSrESigner instance = null;
+
+    private PSrESigner() {
     }
 
-    public static GlobalSigner getInstance() {
+    public static PSrESigner getInstance() {
         if (instance == null) {
-            instance = new GlobalSigner();
+            instance = new PSrESigner();
         }
 
         return instance;
     }
+    public SignResponseAttributes requestSign(ServerType serverType, AuthenticationToken token, SignRequest signRequest) throws RequestException, ParseException {
+        final RequestSigner[] signers = signRequest.getSigners();
+        final boolean signingOrder = signRequest.isSigningOrder();
+        final String callbackUrl = signRequest.getCallbackUrl();
 
-    public SignResponseAttributes requestSign(ServerType serverType, AuthenticationToken token, SignRequest signRequest) throws RequestException {
         try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
+            // TODO: connect to Mekari Sign server
 
-            final URL baseUrl = serverType.getApiBaseUrl();
-            final String urlGlobal = String.format("%s/v%d/esign/v%d/documents/request_global_sign", baseUrl, serverType.getApiVersion(), serverType.getEsignVersion());
+            //Membuat JSON payload untuk permintaan POST
+
+            // Menentukan URL server
             final JSONObject requestJson = signRequest.toJson();
+            final HttpEntity httpEntity = new StringEntity(requestJson.toString(), ContentType.APPLICATION_JSON);
+            final URL baseUrl = serverType.getApiBaseUrl();
+            final String urlGlobal =  String.format("%s/v%d/esign/v%d/documents/request_psre_sign", baseUrl, serverType.getApiVersion(), serverType.getEsignVersion());
 
             final HttpPost post = new HttpPost(urlGlobal) {{
-                if (token.getTokenType() == TokenType.BEARER) {
-                    addHeader("Authorization", "Bearer " + token.getAccessToken());
-                }
-
-                final HttpEntity httpEntity = new StringEntity(requestJson.toString(), ContentType.APPLICATION_JSON);
+                addHeader("Authorization", "Bearer " + token.getAccessToken());
                 setEntity(httpEntity);
             }};
 
@@ -63,7 +68,14 @@ public class GlobalSigner {
                 final SignResponse signResponse = new SignResponse(jsonResponsePayload);
                 return signResponse.getData().getAttributes();
             }
-        } catch (IOException | JSONException | ParseException e) {
+
+            // final int statusCode = response.getStatusLine().getStatusCode();
+
+            // if (statusCode != 200) {
+            //     throw new RequestException("HTTP response code [" + statusCode + "]");
+            // }
+
+        } catch (IOException | JSONException e) {
             throw new RequestException(e);
         }
     }
