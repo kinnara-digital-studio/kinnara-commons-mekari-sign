@@ -37,7 +37,7 @@ public class UserProfileService {
         try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
 
             final URL baseUrl = serverType.getApiBaseUrl();
-            final String urlGlobal = baseUrl + "/v2/esign/v1/profile";
+            final String urlGlobal = String.format("%s/v%d/esign/v%d/profile", baseUrl, serverType.getApiVersion(), serverType.getEsignVersion());
 
             final HttpGet get = new HttpGet(urlGlobal) {{
                 if (token.getTokenType() == TokenType.BEARER) {

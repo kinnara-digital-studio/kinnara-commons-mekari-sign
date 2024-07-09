@@ -34,7 +34,7 @@ public class AutoSignService {
 
         try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
             final URL baseUrl = serverType.getApiBaseUrl();
-            final  String urlAuto = baseUrl + "/v2/esign/v1/auto_sign";
+            final String urlAuto = String.format("%s/v%d/esign/v%d/auto_sign", baseUrl, serverType.getApiVersion(), serverType.getEsignVersion());
             final JSONObject requestJson = reqAutoSign.toJson();
 
             final HttpPost post = new HttpPost(urlAuto) {{

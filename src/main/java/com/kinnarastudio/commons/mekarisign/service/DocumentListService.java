@@ -40,7 +40,7 @@ public class DocumentListService {
         try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
 
             final URL baseUrl = serverType.getApiBaseUrl();
-            String urlGlobal = baseUrl + "/v2/esign/v1/documents?page=" + page + "&limit=" + limit;
+            String urlGlobal = String.format("%s/v%d/esign/v%d/documents?page=%d&limit=%d" , baseUrl, serverType.getApiVersion(), serverType.getEsignVersion(), page, limit);
 
             System.out.println("Status: " + status);
             if (category != null) {

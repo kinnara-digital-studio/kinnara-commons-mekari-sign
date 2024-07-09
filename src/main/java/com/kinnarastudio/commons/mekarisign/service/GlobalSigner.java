@@ -35,7 +35,7 @@ public class GlobalSigner {
         try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
 
             final URL baseUrl = serverType.getApiBaseUrl();
-            final String urlGlobal = baseUrl + "/v2/esign/v1/documents/request_global_sign";
+            final String urlGlobal = String.format("%s/v%d/esign/v%d/documents/request_global_sign", baseUrl, serverType.getApiVersion(), serverType.getEsignVersion());
             final JSONObject requestJson = signRequest.toJson();
 
             final HttpPost post = new HttpPost(urlGlobal) {{

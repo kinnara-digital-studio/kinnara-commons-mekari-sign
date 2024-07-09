@@ -37,8 +37,8 @@ public class DocumentDetailService {
         try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
 
             final URL baseUrl = serverType.getApiBaseUrl();
-            String urlGlobal = baseUrl + "/v2/esign/v1/documents/" + id;
-
+            String urlGlobal = String.format("%s/v%d/esign/v%d/documents/%s", baseUrl, serverType.getApiVersion(), serverType.getEsignVersion(), id);
+            System.out.println(urlGlobal);
             final HttpGet get = new HttpGet(urlGlobal) {{
                 if (token.getTokenType() == TokenType.BEARER) {
                     addHeader("Authorization", "Bearer " + token.getAccessToken());

@@ -45,7 +45,7 @@ public class PSrESigner {
             final JSONObject requestJson = signRequest.toJson();
             final HttpEntity httpEntity = new StringEntity(requestJson.toString(), ContentType.APPLICATION_JSON);
             final URL baseUrl = serverType.getApiBaseUrl();
-            final String urlGlobal =  baseUrl + "/v2/esign/v1/documents/request_psre_sign";
+            final String urlGlobal =  String.format("%s/v%d/esign/v%d/documents/request_psre_sign", baseUrl, serverType.getApiVersion(), serverType.getEsignVersion());
 
             final HttpPost post = new HttpPost(urlGlobal) {{
                 addHeader("Authorization", "Bearer " + token.getAccessToken());

@@ -35,8 +35,8 @@ public class KYC {
 
     public RespAttributesKYC requestKYC(ServerType serverType, AuthenticationToken token, ReqKYC reqKYC) throws IOException, RequestException {
         try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
-            final URL baseUrl = serverType.getBaseUrl();
-            final String urlGlobal = baseUrl + "/v2/esign/v1/ekyc_request";
+            final URL baseUrl = serverType.getApiBaseUrl();
+            final String urlGlobal = String.format("%s/v%d/esign/v%d/ekyc_request", baseUrl, serverType.getApiVersion(), serverType.getEsignVersion());
             final JSONObject requestJson = reqKYC.toJson();
 
             final HttpPost post = new HttpPost(urlGlobal) {{

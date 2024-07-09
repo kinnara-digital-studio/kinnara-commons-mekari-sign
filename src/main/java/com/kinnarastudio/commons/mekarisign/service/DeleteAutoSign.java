@@ -35,7 +35,7 @@ public class DeleteAutoSign {
     public AutoSignResponse deleteAutoSign(ServerType serverType, AuthenticationToken token, String autoSignId) throws RequestException, IOException {
         try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
             final URL baseUrl = serverType.getApiBaseUrl();
-            final String delAutoSign = baseUrl + "/v2/esign/v1/auto_sign/" + autoSignId;
+            final String delAutoSign = String.format("%s/v%d/esign/v%d/auto_sign/%s", baseUrl, serverType.getApiVersion(), serverType.getEsignVersion(), autoSignId);
 
             final HttpDelete delete = new HttpDelete(delAutoSign);
             if (token.getTokenType() == TokenType.BEARER) {
