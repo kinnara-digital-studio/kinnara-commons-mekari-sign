@@ -162,6 +162,15 @@ public class MekariSign {
         }
     }
 
+    public void reqEKYC(ReqKYC requestEKYC) throws RequestException{
+        final KYC request = KYC.getInstance();
+        try {
+            request.requestKYC(serverType, authenticationToken, requestEKYC);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void digitalStamp(File file) {
 
     }

@@ -1,7 +1,8 @@
 package com.kinnarastudio.commons.mekarisign.model;
 
 public enum GrantType {
-    AUTHORIZATION_CODE("authorization_code");
+    AUTHORIZATION_CODE("authorization_code"),
+    REFRESH_TOKEN("refresh_token");
 
     private final String value;
 
