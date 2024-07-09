@@ -75,7 +75,7 @@ public class UnitTest1 {
             //         .orElseThrow(() -> new IOException("Resource not found"));
 
             // final File file = new File("/home/natsuchi/Documents/testing_doc2.pdf");
-            File file = File.createTempFile("test", ".txt", new File("/home/user/Documents/"));
+            File file = File.createTempFile("test", ".pdf", new File("/home/user/Documents/"));
             file.setWritable(true);
             final MekariSign mekariSign = MekariSign.getBuilder()
                     .setClientId(clientId)
