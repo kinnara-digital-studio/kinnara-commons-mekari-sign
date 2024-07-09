@@ -19,15 +19,15 @@ import com.kinnarastudio.commons.mekarisign.model.ServerType;
 import com.kinnarastudio.commons.mekarisign.model.TokenType;
 import com.kinnarastudio.commons.mekarisign.model.UserProfileModel;
 
-public class UserProfile {
-    private static UserProfile instance = null;
+public class UserProfileService {
+    private static UserProfileService instance = null;
 
-    private UserProfile() {
+    private UserProfileService() {
     }
 
-    public static UserProfile getInstance() {
+    public static UserProfileService getInstance() {
         if (instance == null) {
-            instance = new UserProfile();
+            instance = new UserProfileService();
         }
 
         return instance;
@@ -36,7 +36,7 @@ public class UserProfile {
     public ProfileData requestProfile(ServerType serverType, AuthenticationToken token) throws RequestException, ParseException {
         try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
 
-            final URL baseUrl = serverType.getBaseUrl();
+            final URL baseUrl = serverType.getApiBaseUrl();
             final String urlGlobal = baseUrl + "/v2/esign/v1/profile";
 
             final HttpGet get = new HttpGet(urlGlobal) {{

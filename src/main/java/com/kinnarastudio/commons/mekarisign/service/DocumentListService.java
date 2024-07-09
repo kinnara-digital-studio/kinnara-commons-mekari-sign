@@ -39,7 +39,7 @@ public class DocumentListService {
     public GetDocumentListBody requestDocs(ServerType serverType, AuthenticationToken token, int page, int limit, DocumentCategory category, SigningStatus status, StampingStatus stamping) throws RequestException, ParseException {
         try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
 
-            final URL baseUrl = serverType.getBaseUrl();
+            final URL baseUrl = serverType.getApiBaseUrl();
             String urlGlobal = baseUrl + "/v2/esign/v1/documents?page=" + page + "&limit=" + limit;
 
             System.out.println("Status: " + status);
@@ -78,7 +78,7 @@ public class DocumentListService {
                 return documentListResponse.getData();
             }
         } catch (IOException | JSONException e) {
-            throw new RequestException("Error authenticating : " + e.getMessage(), e);
+            throw new RequestException(e);
         }
     }
 }

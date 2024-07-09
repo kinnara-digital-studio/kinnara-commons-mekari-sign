@@ -2,6 +2,7 @@ package com.kinnarastudio.commons.mekarisign.service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 
 import org.apache.http.HttpResponse;
@@ -16,6 +17,7 @@ import com.kinnarastudio.commons.mekarisign.model.ServerType;
 import com.kinnarastudio.commons.mekarisign.model.TokenType;
 
 public class DocumentDownloader {
+    public final static int BYTE_ARRAY_BUFFER_SIZE = 4096;
     private static DocumentDownloader instance = null;
 
     private DocumentDownloader() {
@@ -29,10 +31,10 @@ public class DocumentDownloader {
         return instance;
     }
 
-    public InputStream downloadFile(ServerType serverType, AuthenticationToken token, String id) throws RequestException {
+    public void downloadFile(ServerType serverType, AuthenticationToken token, String id, OutputStream outputStream) throws RequestException {
         try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
 
-            final URL baseUrl = serverType.getBaseUrl();
+            final URL baseUrl = serverType.getApiBaseUrl();
             String urlGlobal = baseUrl + "/v2/esign/v1/documents/" + id + "/download";
 
             final HttpGet get = new HttpGet(urlGlobal) {{
@@ -43,10 +45,16 @@ public class DocumentDownloader {
 
             final HttpResponse response = httpClient.execute(get);
 
-            return response.getEntity().getContent();
-
+            InputStream inputStream = response.getEntity().getContent();
+            
+            final byte[] buffer = new byte[BYTE_ARRAY_BUFFER_SIZE];
+            int len;
+            while ((len = inputStream.read(buffer)) >= 0) {
+                outputStream.write(buffer, 0, len);
+            }
+            
         } catch (IOException | JSONException e) {
-            throw new RequestException(e.getMessage(), e);
+            throw new RequestException(e);
         }
     }
 }

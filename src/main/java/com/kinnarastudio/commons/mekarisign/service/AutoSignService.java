@@ -16,16 +16,16 @@ import java.net.URL;
 import java.text.ParseException;
 import java.util.stream.Collectors;
 
-public class AutoSign {
-    private static AutoSign instance = null;
+public class AutoSignService {
+    private static AutoSignService instance = null;
 
-    private AutoSign() {
+    private AutoSignService() {
 
     }
 
-    public static AutoSign getInstance() {
+    public static AutoSignService getInstance() {
         if (instance == null) {
-            instance = new AutoSign();
+            instance = new AutoSignService();
         }
         return instance;
     }
@@ -33,7 +33,7 @@ public class AutoSign {
     public RespDataAutoSign[] requestAutoSign(ServerType serverType, AuthenticationToken token, ReqAutoSign reqAutoSign) throws RequestException, IOException {
 
         try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
-            final URL baseUrl = serverType.getBaseUrl();
+            final URL baseUrl = serverType.getApiBaseUrl();
             final  String urlAuto = baseUrl + "/v2/esign/v1/auto_sign";
             final JSONObject requestJson = reqAutoSign.toJson();
 
@@ -64,7 +64,7 @@ public class AutoSign {
 
             }
         } catch (IOException | ParseException e) {
-            throw new RequestException(e.getMessage(), e);
+            throw new RequestException(e);
         }
     }
 }

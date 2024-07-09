@@ -19,15 +19,15 @@ import com.kinnarastudio.commons.mekarisign.model.ServerType;
 import com.kinnarastudio.commons.mekarisign.model.SignResponseAttributes;
 import com.kinnarastudio.commons.mekarisign.model.TokenType;
 
-public class DocumentDetail {
-    private static DocumentDetail instance = null;
+public class DocumentDetailService {
+    private static DocumentDetailService instance = null;
 
-    private DocumentDetail() {
+    private DocumentDetailService() {
     }
 
-    public static DocumentDetail getInstance() {
+    public static DocumentDetailService getInstance() {
         if (instance == null) {
-            instance = new DocumentDetail();
+            instance = new DocumentDetailService();
         }
 
         return instance;
@@ -36,7 +36,7 @@ public class DocumentDetail {
     public SignResponseAttributes requestDocs(ServerType serverType, AuthenticationToken token, String id) throws RequestException, ParseException {
         try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
 
-            final URL baseUrl = serverType.getBaseUrl();
+            final URL baseUrl = serverType.getApiBaseUrl();
             String urlGlobal = baseUrl + "/v2/esign/v1/documents/" + id;
 
             final HttpGet get = new HttpGet(urlGlobal) {{
@@ -62,7 +62,7 @@ public class DocumentDetail {
                 return signResponse.getData().getAttributes();
             }
         } catch (IOException | JSONException e) {
-            throw new RequestException("Error authenticating : " + e.getMessage(), e);
+            throw new RequestException(e);
         }
     }
 }
