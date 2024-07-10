@@ -5,7 +5,7 @@ Mekari eSign API provides a broad range of functionality to help you build docum
 meterai, and sign documents. Mekari Sign API is organized around REST. Our API has predictable resource-oriented URLs and uses standard HTTP response codes, authentication, and verbs. Mekari eSign is a digital signature. Digital signature is a secure, electronic way to confirm the authenticity and integrity of a document or message using encryption. Several features are available in the implementation of the mekari esign application, namely Global Sign, PSrE Sign, eKYC, and Auto Sign.
 
 ## Java Version
-1.8
+11.0
 
 ## Configuration
 If you want to use this Mekari Sign Java API, you will need :
