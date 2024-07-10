@@ -27,7 +27,7 @@ mekariSign.globalSign(file, signer);
 ```
 
 - Auto Sign Request :
-```
+```java
 final MekariSign mekariSign = MekariSign.getBuilder()
       .setClientId(clientId)
       .setClientSecret(clientSecret)
@@ -39,7 +39,7 @@ mekariSign.autoSign(req);
 ```
 
 - Delete Auto Sign Request :
-```
+```java
   final MekariSign mekariSign = MekariSign.getBuilder()
      .setClientId(clientId)
       .setClientSecret(clientSecret)
@@ -51,7 +51,7 @@ mekariSign.deleteAutoSign(id);
 ```
 
 - PSrE Sign Request :
-```
+```java
 final MekariSign mekariSign = MekariSign.getBuilder()
     .setClientId(clientId)
     .setClientSecret(clientSecret)
@@ -63,7 +63,7 @@ mekariSign.psreSign(file, signer);
 ```
 
 - Download File :
-```
+```java
 final MekariSign mekariSign = MekariSign.getBuilder()
       .setClientId(clientId)
       .setClientSecret(clientSecret)
@@ -75,7 +75,7 @@ mekariSign.downloadDoc("01ec84e4-f8b4-449b-9429-ffff8c1a764b", file);
 ```
 
 - Document List Retrieval :
-```
+```java
 final MekariSign mekariSign = MekariSign.getBuilder()
      .setClientId(clientId)
      .setClientSecret(clientSecret)
@@ -83,11 +83,11 @@ final MekariSign mekariSign = MekariSign.getBuilder()
      .setSecretCode(code)
      .build();
 
-mekariSign.getDoc(1, 8, DocumentCategory.PSRE, null, null);;
+mekariSign.getDoc(1, 8, DocumentCategory.PSRE, null, null);
 ```
 
 - Document List Detail :
-```
+```java
 final MekariSign mekariSign = MekariSign.getBuilder()
       .setClientId(clientId)
       .setClientSecret(clientSecret)
@@ -95,7 +95,7 @@ final MekariSign mekariSign = MekariSign.getBuilder()
       .setSecretCode(code)
       .build();
 
-mekariSign.getDocDetail("01ec84e4-f8b4-449b-9429-ffff8c1a764b");;
+mekariSign.getDocDetail("01ec84e4-f8b4-449b-9429-ffff8c1a764b");
 ```
 
 ## References
