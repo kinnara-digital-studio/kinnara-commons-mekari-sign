@@ -31,7 +31,7 @@ public class MekariSign {
     /**
      * Implementation of Mekari Sign's global sign
      *
-     * @see <a href="https://">docs</a>
+     * @see <a href="https://documenter.getpostman.com/view/21582074/2s93K1oecc#c788f84c-9228-4eb9-a55f-a043f9d9019a">Global - Request Sign</a>
      *
      * @param file              File to upload
      * @param signer            Signer's information

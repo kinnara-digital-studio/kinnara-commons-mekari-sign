@@ -180,7 +180,7 @@ public class UnitTest1 {
                     .setSecretCode(code)
                     .build();
 
-            mekariSign.globalSign;
+            mekariSign.getProfile();
 
         } catch (IOException e) {
             throw new RuntimeException(e);
