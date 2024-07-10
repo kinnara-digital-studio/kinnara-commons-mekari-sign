@@ -9,21 +9,46 @@ import java.nio.file.Files;
 import java.text.ParseException;
 import java.util.Base64;
 
+/**
+ * Mekari Sign main class
+ */
 public class MekariSign {
     public final static int BYTE_ARRAY_BUFFER_SIZE = 4096;
 
     private final ServerType serverType;
     private final AuthenticationToken authenticationToken;
 
+    /**
+     *
+     * @param serverType            {@link ServerType}
+     * @param authenticationToken   {@link AuthenticationToken}
+     */
     public MekariSign(ServerType serverType, AuthenticationToken authenticationToken) {
         this.serverType = serverType;
         this.authenticationToken = authenticationToken;
     }
 
+    /**
+     * Implementation of Mekari Sign's global sign
+     *
+     * @see <a href="https://">docs</a>
+     *
+     * @param file              File to upload
+     * @param signer            Signer's information
+     * @throws RequestException
+     */
     public void globalSign(File file, RequestSigner signer) throws RequestException {
         globalSign(file, new RequestSigner[]{signer});
     }
 
+    /**
+     * Implementation of Mekari Sign's global sign
+     *
+     * @param inputStream       Stream of file input
+     * @param filename          Name of file
+     * @param signer            Signer's information
+     * @throws RequestException
+     */
     public void globalSign(InputStream inputStream, String filename, RequestSigner signer) throws RequestException {
         globalSign(inputStream, filename, new RequestSigner[]{signer});
     }
@@ -152,7 +177,7 @@ public class MekariSign {
         }
     }
 
-    public void reqEKYC(ReqKYC requestEKYC) throws RequestException{
+    public void requestEKYC(RequestKYC requestEKYC) throws RequestException{
         final KYC request = KYC.getInstance();
         try {
             request.requestKYC(serverType, authenticationToken, requestEKYC);
@@ -165,6 +190,11 @@ public class MekariSign {
 
     }
 
+    /**
+     * Get MekariSign builder
+     *
+     * @return  {@link Builder}
+     */
     public static Builder getBuilder() {
         return new Builder();
     }

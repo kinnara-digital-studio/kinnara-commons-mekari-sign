@@ -33,32 +33,6 @@ public class Authenticator {
         return instance;
     }
 
-    /**
-     * <a href="https://documenter.getpostman.com/view/21582074/2s93K1oecc#9df19971-fcaf-4cf7-bc23-9188c2ed625d">Get Authorized Code</a>
-     */
-//    public String getAuthorizedCode(ServerType serverType, String clientId, String username, String password) throws RequestException {
-//        final String methodLabel = "Get Authorized Code";
-//        try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
-//            final URL ssoBaseUrl = serverType.getSsoBaseUrl();
-//            final String url = ssoBaseUrl + "/auth?client_id=" + clientId + "&response_type=code&scope=esign&lang=id";
-//            final HttpGet request = new HttpGet(url);
-//            final HttpResponse response = client.execute(request);
-//            final int statusCode = response.getStatusLine().getStatusCode();
-//            if (statusCode != 200) {
-//                throw new RequestException("HTTP response code [" + statusCode + "]");
-//            }
-//
-//            try (InputStream is = response.getEntity().getContent();
-//                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is))) {
-//
-//                final JSONObject jsonResponsePayload = new JSONObject(bufferedReader.lines().collect(Collectors.joining()));
-//                final String code = jsonResponsePayload.getString("code");
-//                return code;
-//            }
-//        } catch (IOException e) {
-//            throw new RequestException("Error executing [" + methodLabel + "]", e);
-//        }
-//    }
     public AuthenticationToken authenticate(ServerType serverType, AuthenticationRequest authentication) throws RequestException {
         final URL ssoBaseUrl = serverType.getSsoBaseUrl();
         final String url = ssoBaseUrl + "/auth/oauth2/token";

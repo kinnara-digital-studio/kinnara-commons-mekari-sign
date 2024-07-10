@@ -2,12 +2,12 @@ package com.kinnarastudio.commons.mekarisign.model;
 
 import org.json.JSONObject;
 
-public class ReqKYC {
+public class RequestKYC {
     private final String email;
     private final String callbackUrl;
     private final boolean sendEmail;
 
-    public ReqKYC(String email, String callbackUrl, boolean sendEmail) {
+    public RequestKYC(String email, String callbackUrl, boolean sendEmail) {
         this.email = email;
         this.callbackUrl = callbackUrl;
         this.sendEmail = sendEmail;
