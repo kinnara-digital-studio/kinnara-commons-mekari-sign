@@ -15,7 +15,7 @@ If you want to use this Mekari Sign Java API, you will need :
 ## Examples
 Here are the usage of some features in Mekari eSign API :
 - Global Sign Request :
-```
+```java
 final MekariSign mekariSign = MekariSign.getBuilder()
       .setClientId(clientId)
       .setClientSecret(clientSecret)
