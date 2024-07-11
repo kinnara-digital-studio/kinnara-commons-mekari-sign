@@ -42,7 +42,6 @@ public class DocumentListService {
             final URL baseUrl = serverType.getApiBaseUrl();
             String urlGlobal = String.format("%s/v%d/esign/v%d/documents?page=%d&limit=%d" , baseUrl, serverType.getApiVersion(), serverType.getEsignVersion(), page, limit);
 
-            System.out.println("Status: " + status);
             if (category != null) {
                 urlGlobal += "&category=" + category;
             }
