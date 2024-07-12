@@ -13,6 +13,7 @@ public class Builder  {
     private String clientSecret;
     private String code;
     private ServerType serverType = ServerType.PRODUCTION;
+    private AuthenticationToken authenticationToken = null;
 
     public Builder setClientId(String clientId) {
         this.clientId = clientId;
@@ -34,24 +35,38 @@ public class Builder  {
         return this;
     }
 
+    public Builder setAuthenticationToken(AuthenticationToken authenticationToken)
+    {
+        this.authenticationToken = authenticationToken;
+        return this;
+    }
+
+    public AuthenticationToken authenticate() throws RequestException, BuildingException
+    {
+        assertNotEmpty(clientId);
+        assertNotEmpty(clientSecret);
+        assertNotEmpty(code);
+        assertNotEmpty(serverType);
+        
+        final Authenticator authenticator = Authenticator.getInstance();
+
+        final AuthenticationRequest authentication = new AuthenticationRequest(clientId, clientSecret, GrantType.AUTHORIZATION_CODE, code);
+        return authenticator.authenticate(serverType, authentication);
+    }
+
     /**
      * Call <a href="https://documenter.getpostman.com/view/21582074/2s93K1oecc#authentication">authentication</a> request and keep token
      *
      * @return
      */
-    public MekariSign build() throws BuildingException {
+    public MekariSign authenticateAndBuild() throws BuildingException {
         try {
-            assertNotEmpty(clientId);
-            assertNotEmpty(clientSecret);
-            assertNotEmpty(serverType);
-            assertNotEmpty(code);
+            if(authenticationToken == null)
+            {
+                authenticationToken = authenticate();
+            }
 
-            final Authenticator authenticator = Authenticator.getInstance();
-
-            final AuthenticationRequest authentication = new AuthenticationRequest(clientId, clientSecret, GrantType.AUTHORIZATION_CODE, code);
-            final AuthenticationToken authenticationToken = authenticator.authenticate(serverType, authentication);
-
-            return new MekariSign(serverType, authenticationToken);
+            return new MekariSign(authenticationToken);
         } catch (RequestException e) {
             throw new BuildingException(e);
         }

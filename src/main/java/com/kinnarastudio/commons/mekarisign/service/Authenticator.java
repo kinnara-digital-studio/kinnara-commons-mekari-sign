@@ -56,7 +56,7 @@ public class Authenticator {
                 }
 
                 final JSONObject jsonResponsePayload = new JSONObject(responsePayload);
-                final AuthenticationToken token = new AuthenticationToken(jsonResponsePayload);
+                final AuthenticationToken token = new AuthenticationToken(jsonResponsePayload, serverType);
                 return token;
             }
         } catch (IOException | JSONException | ParseException e) {
@@ -88,7 +88,7 @@ public class Authenticator {
                 }
 
                 final JSONObject jsonResponsePayload = new JSONObject(responsePayload);
-                final AuthenticationToken token = new AuthenticationToken(jsonResponsePayload);
+                final AuthenticationToken token = new AuthenticationToken(jsonResponsePayload, serverType);
                 return token;
             } catch (RequestException e) {
                 throw new RuntimeException(e);

@@ -40,7 +40,7 @@ public class UnitTest1 {
                     .setClientSecret(clientSecret)
                     .setServerType(ServerType.SANDBOX)
                     .setSecretCode(code)
-                    .build();
+                    .authenticateAndBuild();
 
                     // try(InputStream inputStream = getClass().getResourceAsStream("/resources/testing_doc2.pdf");) {
                     //     mekariSign.globalSign(inputStream, new Date().toString() + ".pdf", new RequestSigner[] {signer});
@@ -82,7 +82,7 @@ public class UnitTest1 {
                     .setClientSecret(clientSecret)
                     .setServerType(ServerType.SANDBOX)
                     .setSecretCode(code)
-                    .build();
+                    .authenticateAndBuild();
 
             mekariSign.downloadDoc("01ec84e4-f8b4-449b-9429-ffff8c1a764b", file);
 
@@ -117,15 +117,49 @@ public class UnitTest1 {
             final String username = properties.getProperty("username");
             final String password = properties.getProperty("password");
 
+            AuthenticationToken authToken = MekariSign.getBuilder()
+            .setClientId(clientId)
+            .setClientSecret(clientSecret)
+            .setServerType(ServerType.SANDBOX)
+            .setSecretCode(code)
+            .authenticate();
+
+            System.out.println(authToken.getAccessToken());
+            System.out.println(authToken.getTokenType());
+            System.out.println(authToken.getExpired());
+            System.out.println(authToken.getRefreshToken());
+            System.out.println(authToken.getServerType());
+
             final MekariSign mekariSign = MekariSign.getBuilder()
-                    .setClientId(clientId)
-                    .setClientSecret(clientSecret)
+                    .setAuthenticationToken(authToken)
                     .setServerType(ServerType.SANDBOX)
-                    .setSecretCode(code)
-                    .build();
+                    .authenticateAndBuild();
 
             mekariSign.getDoc(1, 8, null, null, null);;
 
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    public void authTokenTest() throws RequestException, BuildingException, ParseException {
+        try (final InputStream is = getClass().getResourceAsStream("/properties/secret.properties")) {
+
+            final Properties properties = new Properties() {{
+                load(is);
+            }};
+
+            AuthenticationToken authToken = new AuthenticationToken("RWPmuyyNokpjXW2TYgcAV136k4KDJpn5", TokenType.BEARER, 3600, "aabbcc", ServerType.SANDBOX);
+
+            final MekariSign mekariSign = MekariSign.getBuilder()
+                    .setAuthenticationToken(authToken)
+                    .authenticateAndBuild();
+            
+            for(int i = 0; i < 10; i++)
+            {
+                System.out.println(mekariSign.getDoc(1, 10, null, null, null).getRespData()[i].getId());
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -150,7 +184,7 @@ public class UnitTest1 {
                     .setClientSecret(clientSecret)
                     .setServerType(ServerType.SANDBOX)
                     .setSecretCode(code)
-                    .build();
+                    .authenticateAndBuild();
 
             mekariSign.getDocDetail("01ec84e4-f8b4-449b-9429-ffff8c1a764b");;
 
@@ -178,7 +212,7 @@ public class UnitTest1 {
                     .setClientSecret(clientSecret)
                     .setServerType(ServerType.SANDBOX)
                     .setSecretCode(code)
-                    .build();
+                    .authenticateAndBuild();
 
             mekariSign.getProfile();
 

@@ -17,6 +17,8 @@ public enum StampingStatus {
                 return FAILED;
             case "success":
                 return SUCCESS;
+            case "null":
+                return null;
             default:
                 throw new ParseException("Error [" + StampingStatus.class.getName() + "] parsing [" + value + "]", 0);
         }

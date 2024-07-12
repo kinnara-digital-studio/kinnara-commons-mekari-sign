@@ -12,6 +12,8 @@ public enum DocumentCategory {
                 return GLOBAL;
             case "psre":
                 return PSRE;
+            case "null":
+                return null;
             default:
                 throw new ParseException("Error [" + DocumentCategory.class.getName() + "] parsing [" + value + "]", 0);
         }

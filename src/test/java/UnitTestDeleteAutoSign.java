@@ -29,7 +29,7 @@ public class UnitTestDeleteAutoSign {
                     .setClientSecret(clientSecret)
                     .setServerType(ServerType.SANDBOX)
                     .setSecretCode(code)
-                    .build();
+                    .authenticateAndBuild();
 
             mekariSign.deleteAutoSign(id);
         } catch (IOException | BuildingException e) {

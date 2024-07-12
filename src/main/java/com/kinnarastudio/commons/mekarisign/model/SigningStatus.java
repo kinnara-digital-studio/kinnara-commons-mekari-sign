@@ -18,6 +18,8 @@ public enum SigningStatus {
                 return VOIDED;
             case "declined":
                 return DECLINED;
+            case "null":
+                return null;
             default:
                 throw new ParseException("Error [" + SigningStatus.class.getName() + "] parsing [" + value + "]", 0);
         }

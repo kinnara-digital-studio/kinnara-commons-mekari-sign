@@ -23,8 +23,8 @@ public class MekariSign {
      * @param serverType            {@link ServerType}
      * @param authenticationToken   {@link AuthenticationToken}
      */
-    public MekariSign(ServerType serverType, AuthenticationToken authenticationToken) {
-        this.serverType = serverType;
+    public MekariSign(AuthenticationToken authenticationToken) {
+        this.serverType = authenticationToken.getServerType();
         this.authenticationToken = authenticationToken;
     }
 
@@ -156,9 +156,9 @@ public class MekariSign {
      * @throws RequestException
      * @throws ParseException
      */
-    public void getDoc(int page, int limit, DocumentCategory category, SigningStatus status, StampingStatus stamping) throws RequestException, ParseException {
+    public GetDocumentListBody getDoc(int page, int limit, DocumentCategory category, SigningStatus status, StampingStatus stamping) throws RequestException, ParseException {
         DocumentListService docListGet = DocumentListService.getInstance();
-        docListGet.requestDocs(serverType, authenticationToken, page, limit, category, status, stamping);
+        return docListGet.requestDocs(serverType, authenticationToken, page, limit, category, status, stamping);
     }
 
     /**

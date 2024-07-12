@@ -36,7 +36,7 @@ public class UnitTestAutoSign {
                     .setClientSecret(clientSecret)
                     .setServerType(ServerType.SANDBOX)
                     .setSecretCode(code)
-                    .build();
+                    .authenticateAndBuild();
 
             mekariSign.autoSign(req);
         } catch (IOException | BuildingException e) {

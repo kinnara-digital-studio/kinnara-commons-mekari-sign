@@ -43,7 +43,7 @@ public class UnitTestPSrE {
                     .setClientSecret(clientSecret)
                     .setServerType(ServerType.SANDBOX)
                     .setSecretCode(code)
-                    .build();
+                    .authenticateAndBuild();
 
             mekariSign.psreSign(file, signer);
 
