@@ -173,17 +173,10 @@ public class UnitTest1 {
                 load(is);
             }};
 
-            final String clientId = properties.getProperty("clientId");
-            final String clientSecret = properties.getProperty("clientSecret");
-            final String code = properties.getProperty("secretCode");
-            final String username = properties.getProperty("username");
-            final String password = properties.getProperty("password");
+            AuthenticationToken authToken = new AuthenticationToken("ObZpjqI1kEL8nehrB9FTiAMQLiDPcC0t", TokenType.BEARER, 3600, "aabbcc", ServerType.SANDBOX);
 
             final MekariSign mekariSign = MekariSign.getBuilder()
-                    .setClientId(clientId)
-                    .setClientSecret(clientSecret)
-                    .setServerType(ServerType.SANDBOX)
-                    .setSecretCode(code)
+                    .setAuthenticationToken(authToken)
                     .authenticateAndBuild();
 
             mekariSign.getDocDetail("01ec84e4-f8b4-449b-9429-ffff8c1a764b");;

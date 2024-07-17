@@ -183,9 +183,9 @@ public class MekariSign {
      * @throws RequestException
      * @throws ParseException
      */
-    public void getDocDetail(String id) throws RequestException, ParseException {
+    public ResponseData getDocDetail(String id) throws RequestException, ParseException {
         DocumentDetailService docListDetail = DocumentDetailService.getInstance();
-        docListDetail.requestDocs(serverType, authenticationToken, id);
+        return docListDetail.requestDocs(serverType, authenticationToken, id);
     }
 
     /**

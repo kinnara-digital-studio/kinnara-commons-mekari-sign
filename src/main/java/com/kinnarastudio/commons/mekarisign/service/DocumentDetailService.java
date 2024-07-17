@@ -14,9 +14,9 @@ import org.json.JSONObject;
 
 import com.kinnarastudio.commons.mekarisign.exception.RequestException;
 import com.kinnarastudio.commons.mekarisign.model.AuthenticationToken;
+import com.kinnarastudio.commons.mekarisign.model.ResponseData;
 import com.kinnarastudio.commons.mekarisign.model.SignResponse;
 import com.kinnarastudio.commons.mekarisign.model.ServerType;
-import com.kinnarastudio.commons.mekarisign.model.SignResponseAttributes;
 import com.kinnarastudio.commons.mekarisign.model.TokenType;
 
 public class DocumentDetailService {
@@ -33,7 +33,7 @@ public class DocumentDetailService {
         return instance;
     }
 
-    public SignResponseAttributes requestDocs(ServerType serverType, AuthenticationToken token, String id) throws RequestException, ParseException {
+    public ResponseData requestDocs(ServerType serverType, AuthenticationToken token, String id) throws RequestException, ParseException {
         try (final CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
 
             final URL baseUrl = serverType.getApiBaseUrl();
@@ -59,7 +59,7 @@ public class DocumentDetailService {
 
                 final JSONObject jsonRespArray = new JSONObject(responsePayload);
                 final SignResponse signResponse = new SignResponse(jsonRespArray);
-                return signResponse.getData().getAttributes();
+                return signResponse.getData();
             }
         } catch (IOException | JSONException e) {
             throw new RequestException(e);
