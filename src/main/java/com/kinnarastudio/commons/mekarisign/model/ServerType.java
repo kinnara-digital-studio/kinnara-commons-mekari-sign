@@ -42,4 +42,17 @@ public enum ServerType {
     public int getEsignVersion() {
         return esignVersion;
     }
+
+    public static ServerType parse(String value) {
+        switch (value.toLowerCase()) {
+            case "sandbox":
+                return SANDBOX;
+            case "mock":
+                return MOCK;
+            case "staging":
+                return STAGING;
+            default:
+                return PRODUCTION;
+        }
+    }
 }
