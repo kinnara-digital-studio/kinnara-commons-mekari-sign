@@ -1,5 +1,6 @@
 package com.kinnarastudio.commons.mekarisign.service;
 
+import com.kinnarastudio.commons.mekarisign.exception.InvalidTokenException;
 import com.kinnarastudio.commons.mekarisign.model.AuthenticationRequest;
 import com.kinnarastudio.commons.mekarisign.model.AuthenticationToken;
 import com.kinnarastudio.commons.mekarisign.model.RefreshTokenRequest;
@@ -52,14 +53,14 @@ public class Authenticator {
                 final String responsePayload = bufferedReader.lines().collect(Collectors.joining());
                 final int statusCode = response.getStatusLine().getStatusCode();
                 if (statusCode != 200) {
-                    throw new RequestException("HTTP response code [" + statusCode + "] response [" + responsePayload + "]");
+                    throw new InvalidTokenException(statusCode, responsePayload);
                 }
 
                 final JSONObject jsonResponsePayload = new JSONObject(responsePayload);
                 final AuthenticationToken token = new AuthenticationToken(jsonResponsePayload, serverType);
                 return token;
             }
-        } catch (IOException | JSONException | ParseException e) {
+        } catch (IOException | JSONException | ParseException | InvalidTokenException e) {
             throw new RequestException("Error authenticating : " + e.getMessage(), e);
         }
     }
@@ -84,16 +85,14 @@ public class Authenticator {
                 final String responsePayload = bufferedReader.lines().collect(Collectors.joining());
                 final int statusCode = response.getStatusLine().getStatusCode();
                 if (statusCode != 200) {
-                    throw new RequestException("HTTP response code [" + statusCode + "] response [" + responsePayload + "]");
+                    throw new InvalidTokenException(statusCode, responsePayload);
                 }
 
                 final JSONObject jsonResponsePayload = new JSONObject(responsePayload);
                 final AuthenticationToken token = new AuthenticationToken(jsonResponsePayload, serverType);
                 return token;
-            } catch (RequestException e) {
-                throw new RuntimeException(e);
             }
-        } catch (IOException | JSONException | ParseException e) {
+        } catch (IOException | JSONException | ParseException | InvalidTokenException e) {
             throw new RequestException("Error authenticating : " + e.getMessage(), e);
         }
     }

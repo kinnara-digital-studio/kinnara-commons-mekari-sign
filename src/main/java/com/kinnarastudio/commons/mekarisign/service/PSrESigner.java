@@ -1,5 +1,6 @@
 package com.kinnarastudio.commons.mekarisign.service;
 
+import com.kinnarastudio.commons.mekarisign.exception.InvalidTokenException;
 import com.kinnarastudio.commons.mekarisign.exception.RequestException;
 import com.kinnarastudio.commons.mekarisign.model.*;
 import org.apache.http.HttpEntity;
@@ -61,7 +62,7 @@ public class PSrESigner {
 
                 final int statusCode = response.getStatusLine().getStatusCode();
                 if (statusCode != 200) {
-                    throw new RequestException("HTTP response code [" + statusCode + "] response [" + responsePayload + "]");
+                    throw new InvalidTokenException(statusCode, responsePayload);
                 }
 
                 final JSONObject jsonResponsePayload = new JSONObject(responsePayload);
@@ -75,7 +76,7 @@ public class PSrESigner {
             //     throw new RequestException("HTTP response code [" + statusCode + "]");
             // }
 
-        } catch (IOException | JSONException e) {
+        } catch (IOException | JSONException | InvalidTokenException e) {
             throw new RequestException(e);
         }
     }

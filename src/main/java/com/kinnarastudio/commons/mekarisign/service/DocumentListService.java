@@ -5,6 +5,7 @@ import java.net.URL;
 import java.text.ParseException;
 import java.util.stream.Collectors;
 
+import com.kinnarastudio.commons.mekarisign.exception.InvalidTokenException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -69,14 +70,14 @@ public class DocumentListService {
 
                 final int statusCode = response.getStatusLine().getStatusCode();
                 if (statusCode != 200) {
-                    throw new RequestException("HTTP response code [" + statusCode + "] response [" + responsePayload + "]");
+                    throw new InvalidTokenException(statusCode, responsePayload);
                 }
 
                 final JSONObject jsonRespArray = new JSONObject(responsePayload);
                 final DocumentListResponse documentListResponse = new DocumentListResponse(jsonRespArray);
                 return documentListResponse.getData();
             }
-        } catch (IOException | JSONException e) {
+        } catch (IOException | JSONException | InvalidTokenException e) {
             throw new RequestException(e);
         }
     }

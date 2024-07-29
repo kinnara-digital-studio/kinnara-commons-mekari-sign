@@ -1,5 +1,6 @@
 package com.kinnarastudio.commons.mekarisign.service;
 
+import com.kinnarastudio.commons.mekarisign.exception.InvalidTokenException;
 import com.kinnarastudio.commons.mekarisign.exception.RequestException;
 import com.kinnarastudio.commons.mekarisign.model.AuthenticationToken;
 import com.kinnarastudio.commons.mekarisign.model.AutoSignResponse;
@@ -57,13 +58,13 @@ public class DeleteAutoSign {
 
                 final int statusCode = response.getStatusLine().getStatusCode();
                 if (statusCode != 200) {
-                    throw new RequestException("HTTP response code [" + statusCode + "] response [" + responsePayload + "]");
+                    throw new InvalidTokenException(statusCode, responsePayload);
                 }
 
                 final JSONObject jsonResponsePayload = new JSONObject(responsePayload);
                 return new AutoSignResponse(jsonResponsePayload);
             }
-        } catch (IOException | ParseException e) {
+        } catch (IOException | ParseException | InvalidTokenException e) {
             throw new RequestException(e);
         }
     }

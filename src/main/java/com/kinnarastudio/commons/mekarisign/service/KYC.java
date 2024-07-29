@@ -1,5 +1,6 @@
 package com.kinnarastudio.commons.mekarisign.service;
 
+import com.kinnarastudio.commons.mekarisign.exception.InvalidTokenException;
 import com.kinnarastudio.commons.mekarisign.exception.RequestException;
 import com.kinnarastudio.commons.mekarisign.model.*;
 import org.apache.http.HttpEntity;
@@ -56,14 +57,14 @@ public class KYC {
 
                 final int statusCode = response.getStatusLine().getStatusCode();
                 if (statusCode != 200) {
-                    throw new RequestException("HTTP response code [" + statusCode + "] response [" + responsePayload + "]");
+                    throw new InvalidTokenException(statusCode, responsePayload);
                 }
 
                 final JSONObject jsonResponsePayload = new JSONObject(responsePayload);
                 final RespKYC respKYC = new RespKYC(jsonResponsePayload);
                 return respKYC.getDataKYC().getAttributesKYC();
             }
-        } catch (IOException | JSONException | ParseException e) {
+        } catch (IOException | JSONException | ParseException | InvalidTokenException e) {
             throw new RequestException("Error authenticating : " + e.getMessage(), e);
         }
     }

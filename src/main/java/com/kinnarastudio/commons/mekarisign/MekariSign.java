@@ -55,10 +55,10 @@ public class MekariSign {
 
     /**
      * Implementation of Mekari Sign's global sign
-     * 
+     *
      * @param file              File to upload
      * @param signers           List of signers information
-     * @throws RequestException 
+     * @throws RequestException
      */
     public void globalSign(File file, RequestSigner[] signers) throws RequestException {
         try (final InputStream is = Files.newInputStream(file.toPath())) {
@@ -71,7 +71,7 @@ public class MekariSign {
 
     /**
      * Implementation of Mekari Sign's global sign
-     * 
+     *
      * @param inputStream       Stream of file input
      * @param filename          Name of the file
      * @param signers           List of signers information
@@ -99,7 +99,7 @@ public class MekariSign {
 
     /**
      * Implementation of Mekari Sign's PSrE Sign
-     * 
+     *
      * @see <a href="https://documenter.getpostman.com/view/21582074/2s93K1oecc#d4cfb7a8-cf05-439e-9e0c-6cf59084edf7">PSrE - Request Sign</a>
      *
      * @param file                  File to upload
@@ -113,7 +113,7 @@ public class MekariSign {
 
     /**
      * Implementation of Mekari Sign's PSrE Sign
-     * 
+     *
      * @param inputStream       Stream of file input
      * @param filename          Name of the file
      * @param signer            List of signer information
@@ -126,7 +126,7 @@ public class MekariSign {
 
     /**
      * Implementation of Mekari Sign's PSrE Sign
-     * 
+     *
      * @param file                  File to upload
      * @param signers               List of signer information
      * @throws RequestException
@@ -145,9 +145,9 @@ public class MekariSign {
 
     /**
      * Implementation of Get Document List on Mekari Sign's
-     * 
+     *
      * @see <a href="https://documenter.getpostman.com/view/21582074/2s93K1oecc#a4d5f4f7-1324-4535-8f16-4321ec6b4875">Get Document Lists</a>
-     * 
+     *
      * @param page                  Page that want's to be accesed
      * @param limit                 Limit per page
      * @param category              Document category (global, psre)
@@ -163,9 +163,9 @@ public class MekariSign {
 
     /**
      * Implementation of Get Status from the Current User on Mekari Sign's
-     * 
+     *
      * @see <a href="https://documenter.getpostman.com/view/21582074/2s93K1oecc#bcd5c3fb-0c0b-46fe-a83c-1c049f08d38a">Current User</a>
-     * 
+     *
      * @throws RequestException
      * @throws ParseException
      */
@@ -176,9 +176,9 @@ public class MekariSign {
 
     /**
      * Implementation of Get Document Detail on Mekari Sign's
-     * 
+     *
      * @see <a href="https://documenter.getpostman.com/view/21582074/2s93K1oecc#dc3fe047-f0b6-4c93-9e5f-fbb640b2a007">Get Document Detail</a>
-     * 
+     *
      * @param id                ID of the document that want be searched
      * @throws RequestException
      * @throws ParseException
@@ -190,16 +190,16 @@ public class MekariSign {
 
     /**
      * Implementation of Download Document on Mekari Sign's
-     * 
+     *
      * @see <a href="https://documenter.getpostman.com/view/21582074/2s93K1oecc#693a5e1e-97c3-447b-8884-81e42766e329">Download Document File</a>
-     * 
+     *
      * @param id            ID of the document that want be downloaded
      * @param fileOutput    File to downloaded
      * @throws RequestException
      */
     public void downloadDoc(String id, File fileOutput) throws RequestException {
         if (fileOutput == null || !fileOutput.canWrite()) {
-            throw new RequestException("Error writing file");
+            throw new RequestException(new IOException("Error file is not defined"));
         }
 
         try (final OutputStream os = Files.newOutputStream(fileOutput.toPath())) {
@@ -213,14 +213,14 @@ public class MekariSign {
 
     /**
      * Implementation of Download Document on Mekari Sign's
-     * 
+     *
      * @param id                    ID of the document that want be downloaded
      * @param outputStream          Stream of output file
      * @throws RequestException
      */
     public void downloadDoc(String id, OutputStream outputStream) throws RequestException {
         if (outputStream == null) {
-            throw new RequestException("Error writing output");
+            throw new RequestException(new IOException("Error writing output"));
         }
 
         DocumentDownloader documentDownloader = DocumentDownloader.getInstance();
@@ -229,7 +229,7 @@ public class MekariSign {
 
     /**
      * Implementation of Mekari Sign's PSrE Sign
-     * 
+     *
      * @param inputStream           Stream of file input
      * @param filename              Name of the file
      * @param signers               List of signer information
@@ -258,9 +258,9 @@ public class MekariSign {
 
     /**
      * Implementation of Mekari Sign's create auto-sign
-     * 
+     *
      * @see <a href="https://documenter.getpostman.com/view/21582074/2s93K1oecc#7c28af8b-7e7b-4482-90a6-0595c081369c">create auto-sign</a>
-     * 
+     *
      * @param reqAutoSign       Requestor and signer emails
      * @throws RequestException
      */
@@ -275,9 +275,9 @@ public class MekariSign {
 
     /**
      * Implementation of Mekari Sign's delete auto-sign
-     * 
+     *
      * @see <a href="https://documenter.getpostman.com/view/21582074/2s93K1oecc#b29b5845-dff1-4b32-8ddb-5b08ed314358">delete auto-sign</a>
-     * 
+     *
      * @param autoSignId        Auto Sign ID
      * @throws RequestException
      */
@@ -292,9 +292,9 @@ public class MekariSign {
 
     /**
      * Implementation of Mekari Sign's KYC
-     * 
+     *
      * @see <a href="https://documenter.getpostman.com/view/21582074/2s93K1oecc#40f5a676-7523-4bcb-b5e7-33c02bf5dfc1">KYC Invitation</a>
-     * 
+     *
      * @param requestEKYC           Email, Callback, boolean send email
      * @throws RequestException
      */
